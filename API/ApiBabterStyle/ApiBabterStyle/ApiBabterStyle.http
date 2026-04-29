@@ -1,0 +1,6 @@
+@ApiBabterStyle_HostAddress = http://localhost:5216
+
+GET {{ApiBabterStyle_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

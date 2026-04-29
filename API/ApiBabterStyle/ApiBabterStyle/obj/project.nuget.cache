@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "VFX8X/s6lvY=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\shora\\OneDrive\\Desktop\\Github\\BarberStyle\\API\\ApiBabterStyle\\ApiBabterStyle\\ApiBabterStyle.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\shora\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.7\\microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
+    "C:\\Users\\shora\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
