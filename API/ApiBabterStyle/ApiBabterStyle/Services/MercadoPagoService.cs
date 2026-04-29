@@ -24,6 +24,8 @@ public class MercadoPagoService(IConfiguration configuration, IWebHostEnvironmen
 
         var publicBaseUrl = configuration["MercadoPago:PublicBaseUrl"]?.TrimEnd('/');
         var frontendBaseUrl = configuration["MercadoPago:FrontendBaseUrl"]?.TrimEnd('/');
+        var canAutoReturn = !string.IsNullOrWhiteSpace(frontendBaseUrl) &&
+            frontendBaseUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 
         var request = new PreferenceRequest
         {
@@ -35,11 +37,11 @@ public class MercadoPagoService(IConfiguration configuration, IWebHostEnvironmen
                 ? null
                 : new PreferenceBackUrlsRequest
                 {
-                    Success = $"{frontendBaseUrl}/pagamento/sucesso",
-                    Pending = $"{frontendBaseUrl}/pagamento/pendente",
-                    Failure = $"{frontendBaseUrl}/pagamento/falha"
+                    Success = $"{frontendBaseUrl}/status.html?id={appointment.Id}&pagamento=sucesso",
+                    Pending = $"{frontendBaseUrl}/status.html?id={appointment.Id}&pagamento=pendente",
+                    Failure = $"{frontendBaseUrl}/status.html?id={appointment.Id}&pagamento=falha"
                 },
-            AutoReturn = "approved",
+            AutoReturn = canAutoReturn ? "approved" : null,
             Items =
             [
                 new PreferenceItemRequest
