@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="BarberStyle e uma barbearia premium para homens que valorizam estilo, cuidado e uma experiencia de alto padrao."
+    />
+    <meta name="theme-color" content="#0b0b0d" />
+    <meta property="og:title" content="BarberStyle | Barbearia Premium" />
+    <meta
+      property="og:description"
+      content="Corte, barba, planos de assinatura e experiencias premium em um ambiente masculino, elegante e profissional."
+    />
+    <meta property="og:type" content="website" />
+    <title>BarberStyle | Barbearia Premium</title>
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#inicio">Pular para o conteudo</a>
+
+    <header class="site-header" data-header>
+      <nav class="nav container" aria-label="Navegacao principal">
+        <a class="brand" href="#inicio" aria-label="BarberStyle inicio">
+          <span class="brand-mark">BS</span>
+          <span>
+            <strong data-brand-name>BarberStyle</strong>
+            <small>Barbearia Premium</small>
+          </span>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-controls="primary-menu" aria-expanded="false" data-menu-toggle>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span class="sr-only">Abrir menu</span>
+        </button>
+
+        <div class="nav-panel" id="primary-menu" data-nav-panel>
+          <a class="dashboard-link" href="admin.html" data-dashboard-link hidden>Dashboard</a>
+          <a href="#servicos">Servicos</a>
+          <a href="#planos">Planos</a>
+          <a href="cliente.html">Meus agendamentos</a>
+          <a class="btn btn-small btn-gold" href="#agendamento">Agendar horario</a>
+        </div>
+
+        <div class="nav-account">
+          <button class="account-toggle" type="button" aria-label="Abrir informacoes da conta" aria-expanded="false" data-account-toggle>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 21a8 8 0 0 0-16 0" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+          <div class="account-menu" data-account-menu hidden>
+            <p class="eyebrow">Conta</p>
+            <strong data-account-name>Visitante</strong>
+            <span data-account-email>Entre para ver seus dados</span>
+            <span data-account-phone></span>
+            <a class="btn btn-gold" href="cliente.html?tab=register" data-account-register>Cadastre-se</a>
+            <a class="btn btn-outline" href="cliente.html?tab=login" data-account-login>Entrar</a>
+            <a class="btn btn-gold" href="cliente.html" data-account-appointments hidden>Meus agendamentos</a>
+            <button class="btn btn-outline" type="button" data-account-logout hidden>Sair</button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="inicio">
+      <section class="hero section-dark">
+        <div class="hero-bg" role="img" aria-label="Ambiente sofisticado de uma barbearia premium"></div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content reveal">
+          <p class="eyebrow">Desde 2016 • Atendimento com hora marcada</p>
+          <h1>Mais que um corte. Uma experiencia de respeito.</h1>
+          <p class="hero-copy">
+            Barbearia premium para homens que valorizam estilo, cuidado e presenca em cada detalhe.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-gold" href="#agendamento">Agendar agora</a>
+            <a class="btn btn-outline" href="#servicos">Conhecer servicos</a>
+          </div>
+          <div class="hero-stats" aria-label="Destaques da barbearia">
+            <div>
+              <strong>10k+</strong>
+              <span>clientes atendidos</span>
+            </div>
+            <div>
+              <strong>4.9</strong>
+              <span>avaliacao media</span>
+            </div>
+            <div>
+              <strong>24h</strong>
+              <span>agenda online no site</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about section" id="sobre">
+        <div class="container split-grid">
+          <div class="section-copy reveal">
+            <p class="eyebrow">Sobre a casa</p>
+            <h2>Tradição, tecnica e ambiente premium para o homem contemporaneo.</h2>
+            <p>
+              A BarberStyle nasceu para transformar o cuidado masculino em um ritual de presenca.
+              Aqui, cada atendimento combina escuta, precisao e acabamento impecavel em um espaco
+              pensado para desacelerar a rotina.
+            </p>
+            <p>
+              Nossa equipe e formada por profissionais especializados em visagismo, barba com navalha,
+              cortes classicos e estilos modernos. O resultado e uma experiencia consistente, elegante e
+              personalizada do primeiro cafe a finalizacao.
+            </p>
+          </div>
+          <div class="about-media reveal">
+            <img
+              src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1200&q=85"
+              alt="Barbeiro finalizando corte masculino em ambiente sofisticado"
+            />
+            <div class="experience-card">
+              <strong>8 anos</strong>
+              <span>de experiencia em cuidado masculino premium</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section services section-graphite" id="servicos">
+        <div class="container">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Servicos</p>
+            <h2>Cuidados completos para manter seu visual sempre alinhado.</h2>
+          </div>
+          <div class="card-grid services-grid">
+            <article class="service-card reveal">
+              <span>01</span>
+              <h3>Corte masculino</h3>
+              <p>Tesoura, maquina, degradê e finalizacao alinhada ao seu estilo.</p>
+            </article>
+            <article class="service-card reveal">
+              <span>02</span>
+              <h3>Barba</h3>
+              <p>Navalha, toalha quente, contorno limpo e produtos profissionais.</p>
+            </article>
+            <article class="service-card reveal">
+              <span>03</span>
+              <h3>Corte + barba</h3>
+              <p>Pacote completo para sair pronto para reunioes, eventos e rotina.</p>
+            </article>
+            <article class="service-card reveal">
+              <span>04</span>
+              <h3>Sobrancelha</h3>
+              <p>Design discreto e natural para valorizar a expressao sem exageros.</p>
+            </article>
+            <article class="service-card reveal">
+              <span>05</span>
+              <h3>Tratamentos capilares</h3>
+              <p>Hidratacao, detox do couro cabeludo e protocolos para fios fortes.</p>
+            </article>
+            <article class="service-card reveal">
+              <span>06</span>
+              <h3>Dia do noivo</h3>
+              <p>Experiencia reservada com cabelo, barba, acabamento e brinde especial.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section plans" id="planos">
+        <div class="container">
+          <div class="section-heading centered reveal">
+            <p class="eyebrow">Clube BarberStyle</p>
+            <h2>Planos para quem leva a propria imagem a serio.</h2>
+            <p>
+              Inspirado na praticidade dos clubes premium: pague mensalmente, mantenha o visual em dia
+              e aproveite beneficios exclusivos.
+            </p>
+          </div>
+          <div class="plan-grid">
+            <article class="plan-card reveal">
+              <p class="plan-label">Essencial</p>
+              <h3>Plano Essencial</h3>
+              <div class="price">R$ 89,90 <span>/mes</span></div>
+              <ul>
+                <li>2 cortes masculinos por mes</li>
+                <li>Agenda preferencial de segunda a quarta</li>
+                <li>10% OFF em produtos selecionados</li>
+                <li>Acabamento de nuca incluso</li>
+              </ul>
+              <a class="btn btn-outline-dark" href="#agendamento" data-plan="Essencial">Escolher plano</a>
+            </article>
+            <article class="plan-card featured reveal">
+              <p class="plan-label">Mais escolhido</p>
+              <h3>Plano Premium</h3>
+              <div class="price">R$ 149,90 <span>/mes</span></div>
+              <ul>
+                <li>Cortes ilimitados com 1 agendamento por vez</li>
+                <li>1 barba completa por mes</li>
+                <li>Agenda todos os dias de funcionamento</li>
+                <li>15% OFF em servicos extras</li>
+              </ul>
+              <a class="btn btn-gold" href="#agendamento" data-plan="Premium">Escolher plano</a>
+            </article>
+            <article class="plan-card reveal">
+              <p class="plan-label">Executivo</p>
+              <h3>Plano Executivo</h3>
+              <div class="price">R$ 229,90 <span>/mes</span></div>
+              <ul>
+                <li>Corte e barba ilimitados</li>
+                <li>Horarios prioritarios e atendimento VIP</li>
+                <li>Tratamento capilar mensal</li>
+                <li>Beneficios para eventos e dia do noivo</li>
+              </ul>
+              <a class="btn btn-outline-dark" href="#agendamento" data-plan="Executivo">Escolher plano</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section gallery section-dark" id="galeria">
+        <div class="container">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Galeria</p>
+            <h2>Ambiente, atendimento e acabamento no mesmo padrao.</h2>
+          </div>
+          <div class="gallery-grid">
+            <figure class="gallery-item large reveal">
+              <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1200&q=85" alt="Cadeiras de barbearia premium" />
+              <figcaption>Ambiente premium</figcaption>
+            </figure>
+            <figure class="gallery-item reveal">
+              <img src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&w=900&q=85" alt="Corte masculino sendo finalizado" />
+              <figcaption>Precisao no corte</figcaption>
+            </figure>
+            <figure class="gallery-item reveal">
+              <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=900&q=85" alt="Produtos e ferramentas de barbearia" />
+              <figcaption>Produtos profissionais</figcaption>
+            </figure>
+            <figure class="gallery-item reveal">
+              <img src="https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?auto=format&fit=crop&w=900&q=85" alt="Barba sendo aparada com maquina" />
+              <figcaption>Barba alinhada</figcaption>
+            </figure>
+            <figure class="gallery-item wide reveal">
+              <img src="https://images.unsplash.com/photo-1593702295094-aea22597af65?auto=format&fit=crop&w=1200&q=85" alt="Lounge de barbearia com cadeiras e espelhos" />
+              <figcaption>Conforto e presenca</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section testimonials" id="depoimentos">
+        <div class="container">
+          <div class="section-heading centered reveal">
+            <p class="eyebrow">Depoimentos</p>
+            <h2>Clientes que voltam porque sentem a diferenca.</h2>
+          </div>
+          <div class="testimonial-grid">
+            <article class="testimonial-card reveal">
+              <div class="stars" aria-label="5 estrelas">★★★★★</div>
+              <p>"Atendimento impecavel, ambiente muito bem cuidado e corte sempre no ponto. Virou meu horario fixo."</p>
+              <strong>Rafael Monteiro</strong>
+              <span>Cliente ha 3 anos</span>
+            </article>
+            <article class="testimonial-card reveal">
+              <div class="stars" aria-label="5 estrelas">★★★★★</div>
+              <p>"A experiencia e diferente de qualquer barbearia comum. Profissionais atentos e acabamento excelente."</p>
+              <strong>Eduardo Martins</strong>
+              <span>Avaliacao Google</span>
+            </article>
+            <article class="testimonial-card reveal">
+              <div class="stars" aria-label="5 estrelas">★★★★★</div>
+              <p>"Contratei o plano premium e ficou muito mais facil manter cabelo e barba alinhados toda semana."</p>
+              <strong>Leonardo Alves</strong>
+              <span>Membro do clube</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section booking section-graphite" id="agendamento">
+        <div class="container booking-grid">
+          <div class="section-copy reveal">
+            <p class="eyebrow">Agendamento online</p>
+            <h2>Escolha seu servico, profissional e melhor horario.</h2>
+            <p>
+              O agendamento acontece dentro do proprio site, com uma experiencia simples e objetiva.
+              Depois de enviar a solicitacao, a recepcao confirma a disponibilidade pelo contato informado.
+            </p>
+            <div class="booking-highlights" aria-label="Beneficios do agendamento">
+              <div>
+                <strong>01</strong>
+                <span>Selecao de servicos avulsos ou planos do clube</span>
+              </div>
+              <div>
+                <strong>02</strong>
+                <span>Preferencia por barbeiro, data e horario</span>
+              </div>
+              <div>
+                <strong>03</strong>
+                <span>Confirmacao rapida pela recepcao da barbearia</span>
+              </div>
+            </div>
+          </div>
+
+          <form class="booking-form reveal" data-booking-form>
+            <div class="form-header">
+              <p class="eyebrow">Reserve seu horario</p>
+              <h3>Agenda BarberStyle</h3>
+            </div>
+
+            <div class="booking-auth-warning" data-booking-auth-warning hidden>
+              Para agendar, entre ou crie sua conta. Assim voce acompanha, cancela ou remarca seus horarios depois.
+              <a href="cliente.html">Acessar minha conta</a>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                Nome completo
+                <input name="name" type="text" placeholder="Seu nome" autocomplete="name" required />
+              </label>
+              <label>
+                Telefone
+                <input name="phone" type="tel" placeholder="(00) 00000-0000" autocomplete="tel" required />
+              </label>
+            </div>
+            <label>
+              Email para acompanhamento
+              <input name="email" type="email" placeholder="voce@email.com" autocomplete="email" />
+            </label>
+
+            <label>
+              Servico ou plano
+              <select name="service" required data-service-select>
+                <option value="">Selecione uma opcao</option>
+              </select>
+            </label>
+
+            <div class="field-grid">
+              <label>
+                Profissional
+                <select name="barber" required>
+                  <option value="">Escolha o profissional</option>
+                  <option>Ton Barber</option>
+                  <option>Michael Trindade</option>
+                  <option>Valdir Bispo</option>
+                  <option>Primeiro disponivel</option>
+                </select>
+              </label>
+              <label>
+                Unidade
+                <select name="unit" required>
+                  <option value="">Escolha a unidade</option>
+                  <option>Centro Premium</option>
+                  <option>Patio 330</option>
+                  <option>Shopping BarberStyle</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                Data
+                <input name="date" type="date" required data-date-input />
+              </label>
+              <label>
+                Horario
+                <select name="time" required data-time-select>
+                  <option value="">Escolha o horario</option>
+                </select>
+              </label>
+            </div>
+
+            <label>
+              Forma de pagamento
+              <select name="paymentMethod" required>
+                <option value="">Escolha a forma de pagamento</option>
+                <option value="Online">Pagar online pelo Mercado Pago</option>
+                <option value="Presencial">Pagar presencialmente na barbearia</option>
+              </select>
+            </label>
+
+            <label>
+              Observacoes
+              <textarea name="notes" rows="4" placeholder="Ex.: preferencia de corte, evento, barba baixa..."></textarea>
+            </label>
+
+            <button class="btn btn-gold booking-submit" type="submit">Solicitar agendamento</button>
+            <p class="form-note">Formulario demonstrativo pronto para integrar com a API de agendamentos.</p>
+            <div class="booking-error" role="alert" data-booking-error hidden></div>
+            <div class="booking-success" role="status" aria-live="polite" data-booking-success hidden></div>
+          </form>
+        </div>
+      </section>
+
+      <section class="final-cta section-dark">
+        <div class="container final-cta-inner reveal">
+          <p class="eyebrow">Agenda aberta</p>
+          <h2>Pronto para elevar seu estilo?</h2>
+          <p>Escolha seu horario e viva uma experiencia de cuidado masculino com padrao premium.</p>
+          <a class="btn btn-gold" href="#agendamento">Agendar pelo site</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="contato">
+      <div class="container footer-grid">
+        <div>
+          <a class="brand footer-brand" href="#inicio">
+            <span class="brand-mark">BS</span>
+            <span>
+              <strong data-brand-name>BarberStyle</strong>
+              <small>Barbearia Premium</small>
+            </span>
+          </a>
+          <p>
+            Uma casa criada para homens que valorizam presenca, tradicao e cuidado impecavel.
+          </p>
+        </div>
+        <div>
+          <h3>Endereco</h3>
+          <p data-address>Rua Exemplo, 123 - Centro, Sao Paulo/SP</p>
+        </div>
+        <div>
+          <h3>Horario</h3>
+          <p>Segunda a sexta: 10h as 20h</p>
+          <p>Sabado: 8h as 16h</p>
+        </div>
+        <div>
+          <h3>Contato</h3>
+          <p><a href="#" data-whatsapp-link data-whatsapp-text>(11) 99999-9999</a></p>
+          <p><a href="https://instagram.com/barberstyle" data-instagram-link target="_blank" rel="noreferrer">@barberstyle</a></p>
+        </div>
+        <div>
+          <h3>Links rapidos</h3>
+          <a href="#servicos">Servicos</a>
+          <a href="#planos">Planos</a>
+          <a href="#galeria">Galeria</a>
+          <a href="#contato">Contato</a>
+          <a href="cliente.html">Meus agendamentos</a>
+          <a href="admin.html">Painel admin</a>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <span>© 2026 BarberStyle. Todos os direitos reservados.</span>
+        <span>Site institucional premium para apresentacao.</span>
+      </div>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

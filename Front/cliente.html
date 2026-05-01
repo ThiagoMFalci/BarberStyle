@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#08090b" />
+    <title>Minha Conta | BarberStyle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="cliente.css" />
+  </head>
+  <body>
+    <main class="account-shell">
+      <section class="account-hero">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">BS</span>
+          <span>
+            <strong>BarberStyle</strong>
+            <small>Area do cliente</small>
+          </span>
+        </a>
+        <div>
+          <p class="eyebrow">Minha conta</p>
+          <h1>Cadastre-se, entre e acompanhe seus horarios.</h1>
+          <p>
+            Depois do login voce consegue visualizar, cancelar e remarcar seus agendamentos em um so lugar.
+          </p>
+        </div>
+      </section>
+
+      <section class="account-panel" data-auth-panel>
+        <div class="tabs" role="tablist" aria-label="Acesso do cliente">
+          <button class="is-active" type="button" data-auth-tab="login">Entrar</button>
+          <button type="button" data-auth-tab="register">Criar conta</button>
+        </div>
+
+        <form class="auth-form is-active" data-login-form>
+          <h2>Entrar</h2>
+          <label>
+            Email ou usuario
+            <input name="email" type="text" autocomplete="username" required />
+          </label>
+          <label>
+            Senha
+            <input name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="btn btn-gold" type="submit">Entrar</button>
+        </form>
+
+        <form class="auth-form" data-register-form>
+          <h2>Criar conta</h2>
+          <label>
+            Nome
+            <input name="name" type="text" autocomplete="name" required />
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            Numero de WhatsApp
+            <input name="phone" type="tel" autocomplete="tel" required />
+          </label>
+          <label>
+            Senha
+            <input name="password" type="password" autocomplete="new-password" minlength="6" required />
+          </label>
+          <button class="btn btn-gold" type="submit">Cadastrar</button>
+        </form>
+
+        <p class="form-message" data-auth-message></p>
+      </section>
+
+      <section class="dashboard" data-customer-dashboard hidden>
+        <header class="dashboard-header">
+          <div>
+            <p class="eyebrow">Area do cliente</p>
+            <h1>Meus agendamentos</h1>
+            <p data-welcome>Bem-vindo.</p>
+            <p class="payment-return-message" data-payment-return-message hidden></p>
+          </div>
+          <div class="header-actions">
+            <a class="btn btn-ghost" href="index.html#agendamento">Novo agendamento</a>
+            <button class="btn btn-ghost" type="button" data-refresh>Atualizar</button>
+            <button class="btn btn-danger" type="button" data-logout>Sair</button>
+          </div>
+        </header>
+
+        <section class="profile-card" aria-labelledby="profile-title">
+          <div class="profile-heading">
+            <div>
+              <p class="eyebrow">Dados da conta</p>
+              <h2 id="profile-title">Informacoes pessoais</h2>
+            </div>
+            <p>Atualize seus dados para manter seus proximos horarios organizados.</p>
+          </div>
+
+          <form class="profile-form" data-profile-form>
+            <label>
+              Nome
+              <input name="name" type="text" autocomplete="name" required />
+            </label>
+            <label>
+              Email
+              <input name="email" type="email" autocomplete="email" readonly />
+            </label>
+            <label>
+              WhatsApp
+              <input name="phone" type="tel" autocomplete="tel" required />
+            </label>
+            <label>
+              Nova senha
+              <input name="password" type="password" autocomplete="new-password" minlength="6" placeholder="Deixe em branco para manter" />
+            </label>
+            <div class="profile-actions">
+              <p class="form-message" data-profile-message></p>
+              <button class="btn btn-gold" type="submit">Salvar alteracoes</button>
+            </div>
+          </form>
+        </section>
+
+        <div class="summary-grid">
+          <article>
+            <span>Proximo horario</span>
+            <strong class="summary-text" data-next>--</strong>
+          </article>
+          <article>
+            <span>Total</span>
+            <strong data-total>0</strong>
+          </article>
+          <article>
+            <span>Ativos</span>
+            <strong data-active>0</strong>
+          </article>
+          <article>
+            <span>Cancelados</span>
+            <strong data-cancelled>0</strong>
+          </article>
+        </div>
+
+        <div class="appointments" data-appointments></div>
+        <div class="empty-state" data-empty hidden>
+          Nenhum agendamento encontrado para esta conta.
+        </div>
+      </section>
+    </main>
+
+    <dialog class="reschedule-dialog" data-reschedule-dialog>
+      <form method="dialog" data-reschedule-form>
+        <h2>Remarcar horario</h2>
+        <input name="id" type="hidden" />
+        <label>
+          Nova data
+          <input name="date" type="date" required />
+        </label>
+        <label>
+          Novo horario
+          <select name="time" required data-time-select>
+            <option value="">Escolha o horario</option>
+          </select>
+        </label>
+        <div class="dialog-actions">
+          <button class="btn btn-ghost" value="cancel" type="button" data-close-dialog>Fechar</button>
+          <button class="btn btn-gold" value="default" type="submit">Salvar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="cliente.js"></script>
+  </body>
+</html>

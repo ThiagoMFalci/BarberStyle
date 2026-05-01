@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Status do Agendamento | BarberStyle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="status.css" />
+  </head>
+  <body>
+    <main class="status-shell">
+      <section class="status-card">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">BS</span>
+          <span>
+            <strong>BarberStyle</strong>
+            <small>Agendamento</small>
+          </span>
+        </a>
+
+        <p class="eyebrow">Status do horario</p>
+        <h1 data-title>Consultando agendamento...</h1>
+        <p data-message>Estamos buscando as informacoes do seu horario.</p>
+
+        <dl class="status-list" data-status-list hidden>
+          <div>
+            <dt>Cliente</dt>
+            <dd data-customer>--</dd>
+          </div>
+          <div>
+            <dt>Servico</dt>
+            <dd data-service>--</dd>
+          </div>
+          <div>
+            <dt>Profissional</dt>
+            <dd data-barber>--</dd>
+          </div>
+          <div>
+            <dt>Data e horario</dt>
+            <dd data-date>--</dd>
+          </div>
+          <div>
+            <dt>Horario</dt>
+            <dd data-status>--</dd>
+          </div>
+          <div>
+            <dt>Pagamento</dt>
+            <dd data-payment>--</dd>
+          </div>
+        </dl>
+
+        <div class="actions">
+          <a class="btn btn-gold" href="index.html#agendamento">Novo agendamento</a>
+          <a class="btn btn-ghost" href="index.html">Voltar ao site</a>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="status.js"></script>
+  </body>
+</html>

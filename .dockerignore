@@ -1,0 +1,14 @@
+.git
+.gitignore
+
+**/bin/
+**/obj/
+
+**/*.db
+**/*.db-shm
+**/*.db-wal
+
+Front/node_modules/
+Front/dist/
+
+README.md

@@ -1,6 +1,104 @@
 @ApiBabterStyle_HostAddress = http://localhost:5216
+@Token = cole-o-token-do-login-aqui
 
-GET {{ApiBabterStyle_HostAddress}}/weatherforecast/
+POST {{ApiBabterStyle_HostAddress}}/api/auth/cadastro
+Content-Type: application/json
+
+{
+  "name": "Cliente Teste",
+  "email": "cliente@barberstyle.com",
+  "phone": "11999999999",
+  "password": "123456"
+}
+
+###
+
+POST {{ApiBabterStyle_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "cliente@barberstyle.com",
+  "password": "123456"
+}
+
+###
+
+GET {{ApiBabterStyle_HostAddress}}/api/barbeiros
 Accept: application/json
 
 ###
+
+GET {{ApiBabterStyle_HostAddress}}/api/servicos
+Accept: application/json
+
+###
+
+POST {{ApiBabterStyle_HostAddress}}/api/agendamentos
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "barberId": "0d27f419-3cde-458f-90d1-1a2f9905a301",
+  "serviceId": "82e9cfcb-0709-4e62-b7ce-7150e1c63583",
+  "scheduledAt": "2026-05-02T14:00:00Z",
+  "notes": "Cliente prefere corte baixo",
+  "createPayment": true
+}
+
+###
+
+GET {{ApiBabterStyle_HostAddress}}/api/agendamentos/meus
+Authorization: Bearer {{Token}}
+Accept: application/json
+
+###
+
+POST {{ApiBabterStyle_HostAddress}}/api/pagamentos/mercado-pago/preferencia
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "appointmentId": "cole-o-id-do-agendamento-aqui"
+}
+
+###
+
+GET {{ApiBabterStyle_HostAddress}}/api/produtos
+Accept: application/json
+
+###
+
+GET {{ApiBabterStyle_HostAddress}}/api/produtos/admin
+Authorization: Bearer {{Token}}
+Accept: application/json
+
+###
+
+POST {{ApiBabterStyle_HostAddress}}/api/produtos/admin
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "name": "Pomada modeladora",
+  "description": "Fixacao media para finalizacao do corte",
+  "category": "Finalizadores",
+  "price": 39.9,
+  "stockQuantity": 12,
+  "imageUrl": ""
+}
+
+###
+
+PUT {{ApiBabterStyle_HostAddress}}/api/produtos/admin/cole-o-id-do-produto-aqui
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "name": "Pomada modeladora",
+  "description": "Fixacao media para finalizacao do corte",
+  "category": "Finalizadores",
+  "price": 42.9,
+  "stockQuantity": 10,
+  "imageUrl": "",
+  "active": true
+}

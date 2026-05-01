@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#08090b" />
+    <title>BarberStyle Admin | Agendamentos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <main class="admin-app">
+      <aside class="sidebar">
+        <a class="brand" href="index.html" aria-label="Voltar para o site">
+          <span class="brand-mark">BS</span>
+          <span>
+            <strong>BarberStyle</strong>
+            <small>Admin</small>
+          </span>
+        </a>
+
+        <nav class="admin-nav" aria-label="Navegacao administrativa">
+          <a class="is-active" href="#agenda">Agenda</a>
+          <a href="#metricas">Metricas</a>
+          <a href="#logs">Logs do dia</a>
+          <a href="#servicos">Servicos</a>
+          <a href="#horarios">Horarios</a>
+        </nav>
+
+        <div class="sidebar-card">
+          <span>Hoje</span>
+          <strong data-current-date>--</strong>
+          <p>Controle os horarios marcados e acompanhe o fluxo da barbearia em tempo real.</p>
+        </div>
+      </aside>
+
+      <section class="dashboard">
+        <header class="dashboard-header">
+          <div>
+            <p class="eyebrow">Painel administrativo</p>
+            <h1>Agendamentos</h1>
+            <p>Visualize horarios marcados, clientes, servicos e status da agenda.</p>
+          </div>
+          <div class="header-actions">
+            <a class="btn btn-ghost" href="index.html">Ver site</a>
+            <button class="btn btn-danger" type="button" data-clear-day>Limpar dia filtrado</button>
+            <button class="btn btn-gold" type="button" data-export>Exportar CSV</button>
+          </div>
+        </header>
+
+        <section class="metrics-grid" id="metricas" aria-label="Resumo de agendamentos">
+          <article class="metric-card">
+            <span>Total</span>
+            <strong data-total-bookings>0</strong>
+            <p>horarios registrados</p>
+          </article>
+          <article class="metric-card">
+            <span>Hoje</span>
+            <strong data-today-bookings>0</strong>
+            <p>atendimentos do dia</p>
+          </article>
+          <article class="metric-card">
+            <span>Pendentes</span>
+            <strong data-pending-bookings>0</strong>
+            <p>aguardando confirmacao</p>
+          </article>
+          <article class="metric-card">
+            <span>Faturamento hoje</span>
+            <strong data-today-revenue>R$ 0</strong>
+            <p>servicos concluidos</p>
+          </article>
+        </section>
+
+        <section class="panel day-log" id="logs">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Logs do dia</p>
+              <h2>Resumo financeiro e operacional</h2>
+            </div>
+            <input type="date" data-log-date />
+          </div>
+          <div class="log-grid">
+            <article>
+              <span>Servicos feitos</span>
+              <strong data-log-completed>0</strong>
+            </article>
+            <article>
+              <span>Cancelados</span>
+              <strong data-log-cancelled>0</strong>
+            </article>
+            <article>
+              <span>Valor concluido</span>
+              <strong data-log-revenue>R$ 0</strong>
+            </article>
+            <article>
+              <span>Online pago</span>
+              <strong data-log-paid>R$ 0</strong>
+            </article>
+          </div>
+          <div class="table-wrap compact">
+            <table>
+              <thead>
+                <tr>
+                  <th>Servico</th>
+                  <th>Cliente</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                  <th>Pagamento</th>
+                </tr>
+              </thead>
+              <tbody data-log-table></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" id="agenda">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Filtros</p>
+              <h2>Agenda da barbearia</h2>
+            </div>
+            <button class="icon-button" type="button" data-clear-filters title="Limpar filtros">Reset</button>
+          </div>
+
+          <div class="filters">
+            <label>
+              Buscar cliente
+              <input type="search" placeholder="Nome, telefone ou servico" data-search />
+            </label>
+            <label>
+              Data
+              <input type="date" data-filter-date />
+            </label>
+            <label>
+              Status
+              <select data-filter-status>
+                <option value="">Todos</option>
+                <option>Pendente</option>
+                <option>Confirmado</option>
+                <option>Concluido</option>
+                <option>Cancelado</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="table-wrap" id="horarios">
+            <table>
+              <thead>
+                <tr>
+                  <th>Horario</th>
+                  <th>Cliente</th>
+                  <th>Servico</th>
+                  <th>Barbeiro</th>
+                  <th>Unidade</th>
+                  <th>Pagamento</th>
+                  <th>Status</th>
+                  <th>Acoes</th>
+                </tr>
+              </thead>
+              <tbody data-booking-table></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" data-empty-state hidden>
+            Nenhum agendamento encontrado. Envie um agendamento pelo site para ele aparecer aqui.
+          </div>
+        </section>
+
+        <section class="panel manager-grid" id="servicos">
+          <div>
+            <div class="panel-header flat">
+              <div>
+                <p class="eyebrow">Catalogo</p>
+                <h2>Servicos</h2>
+              </div>
+            </div>
+            <form class="service-form" data-service-form>
+              <input name="id" type="hidden" />
+              <label>
+                Nome
+                <input name="name" type="text" placeholder="Ex.: Corte degradê" required />
+              </label>
+              <label>
+                Descricao
+                <input name="description" type="text" placeholder="Descricao curta do servico" />
+              </label>
+              <div class="form-grid">
+                <label>
+                  Preco
+                  <input name="price" type="number" min="0" step="0.01" required />
+                </label>
+                <label>
+                  Tempo
+                  <input name="duration" type="number" min="10" step="5" required />
+                </label>
+              </div>
+              <label class="toggle-row">
+                <input name="active" type="checkbox" checked />
+                Servico ativo
+              </label>
+              <button class="btn btn-gold" type="submit">Salvar servico</button>
+              <p class="api-message" data-service-message></p>
+            </form>
+          </div>
+
+          <div class="service-list" data-service-list></div>
+        </section>
+
+        <section class="panel schedule-panel" id="horarios">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Configuracao</p>
+              <h2>Horarios disponiveis</h2>
+            </div>
+          </div>
+          <form class="schedule-form" data-schedule-form>
+            <label>
+              Novo horario
+              <input name="time" type="time" required />
+            </label>
+            <button class="btn btn-gold" type="submit">Adicionar horario</button>
+          </form>
+          <div class="chips" data-schedule-list></div>
+        </section>
+
+        <section class="panel api-panel">
+          <div>
+            <p class="eyebrow">Integracao com API</p>
+            <h2>Dados reais do backend</h2>
+            <p>
+              O dashboard tambem esta preparado para consumir <code>GET /api/agendamentos/admin</code>
+              com token de administrador.
+            </p>
+          </div>
+          <form class="api-login" data-api-login>
+            <label>
+              API URL
+              <input name="apiUrl" type="url" value="http://localhost:5216" />
+            </label>
+            <label>
+              Usuario admin
+              <input name="email" type="text" placeholder="admin" autocomplete="username" />
+            </label>
+            <label>
+              Senha
+              <input name="password" type="password" placeholder="Senha do admin" autocomplete="current-password" />
+            </label>
+            <button class="btn btn-gold" type="submit">Carregar da API</button>
+            <p class="api-message" data-api-message></p>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="admin.js"></script>
+  </body>
+</html>
