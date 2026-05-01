@@ -1,4 +1,4 @@
-const apiUrl = "";
+const apiUrl = import.meta.env.VITE_API_URL || "";
 const sessionKey = "barberstyle_customer_session";
 const usersKey = "barberstyle_customer_users";
 const bookingKey = "barberstyle_bookings";
