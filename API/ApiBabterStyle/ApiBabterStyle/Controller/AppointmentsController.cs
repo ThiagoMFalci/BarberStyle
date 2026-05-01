@@ -350,6 +350,33 @@ public class AppointmentsController(BarberShopDbContext db, MercadoPagoService m
         return Ok(ToAdminResponse(appointment));
     }
 
+    [HttpPatch("admin/{id:guid}/pagamento")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<AdminAppointmentResponse>> UpdatePaymentStatus(Guid id, PaymentStatus paymentStatus, CancellationToken cancellationToken)
+    {
+        var appointment = await db.Appointments
+            .Include(item => item.User)
+            .Include(item => item.Barber)
+            .Include(item => item.Service)
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+        if (appointment is null)
+        {
+            return NotFound(new { message = "Agendamento nao encontrado." });
+        }
+
+        appointment.PaymentStatus = paymentStatus;
+
+        if (paymentStatus == PaymentStatus.Paid && appointment.Status == AppointmentStatus.WaitingPayment)
+        {
+            appointment.Status = AppointmentStatus.Scheduled;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        return Ok(ToAdminResponse(appointment));
+    }
+
     [HttpDelete("admin/{id:guid}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> DeleteForAdmin(Guid id, CancellationToken cancellationToken)

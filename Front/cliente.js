@@ -4,6 +4,7 @@ const usersKey = "barberstyle_customer_users";
 const bookingKey = "barberstyle_bookings";
 const scheduleKey = "barberstyle_schedule";
 const defaultSchedule = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00", "19:00"];
+const appointmentsRefreshInterval = 15000;
 
 const authPanel = document.querySelector("[data-auth-panel]");
 const dashboard = document.querySelector("[data-customer-dashboard]");
@@ -23,6 +24,7 @@ const paymentReturnMessage = document.querySelector("[data-payment-return-messag
 
 let session = JSON.parse(localStorage.getItem(sessionKey) || "null");
 let appointments = [];
+let appointmentsRefreshTimer = null;
 
 init();
 
@@ -182,6 +184,7 @@ function logout() {
   session = null;
   localStorage.removeItem(sessionKey);
   appointments = [];
+  stopAppointmentsAutoRefresh();
   renderSession();
 }
 
@@ -198,6 +201,23 @@ function renderSession() {
   populateProfileForm();
   loadProfile();
   handlePaymentReturn().then(loadAppointments);
+  startAppointmentsAutoRefresh();
+}
+
+function startAppointmentsAutoRefresh() {
+  stopAppointmentsAutoRefresh();
+  appointmentsRefreshTimer = window.setInterval(() => {
+    if (!document.hidden) {
+      loadAppointments();
+    }
+  }, appointmentsRefreshInterval);
+}
+
+function stopAppointmentsAutoRefresh() {
+  if (appointmentsRefreshTimer) {
+    window.clearInterval(appointmentsRefreshTimer);
+    appointmentsRefreshTimer = null;
+  }
 }
 
 async function handlePaymentReturn() {

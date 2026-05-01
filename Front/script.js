@@ -205,9 +205,20 @@ function initBookingForm() {
       createdAt: new Date().toISOString(),
     };
 
+    const paymentWindow = paymentMethod === "Online"
+      ? window.open("about:blank", "_blank")
+      : null;
+
+    if (paymentWindow) {
+      paymentWindow.opener = null;
+      paymentWindow.document.title = "Mercado Pago";
+      paymentWindow.document.body.innerHTML = "<p style=\"font-family: Arial, sans-serif; padding: 24px;\">Preparando pagamento seguro...</p>";
+    }
+
     const apiResult = await createApiBooking(booking);
 
     if (apiResult?.error) {
+      paymentWindow?.close();
       return;
     }
 
@@ -220,6 +231,7 @@ function initBookingForm() {
 
     if (paymentMethod === "Online") {
       if (!booking.paymentUrl) {
+        paymentWindow?.close();
         showBookingMessage(
           "Nao foi possivel iniciar o pagamento online agora. Tente novamente em instantes ou escolha pagamento presencial.",
           "error",
@@ -228,8 +240,17 @@ function initBookingForm() {
       }
 
       saveBooking(booking);
-      showBookingMessage("Horario reservado. Redirecionando para o Mercado Pago para finalizar o pagamento.", "success");
-      window.location.href = booking.paymentUrl;
+      showBookingMessage("Horario reservado. Abrimos o Mercado Pago em uma nova aba para finalizar o pagamento.", "success");
+
+      if (paymentWindow && !paymentWindow.closed) {
+        paymentWindow.location.href = booking.paymentUrl;
+      } else {
+        appendPaymentLink(booking.paymentUrl);
+      }
+
+      appendStatusLink(booking.id);
+      bookingForm.reset();
+      updateAvailableTimes();
       return;
     }
 
@@ -432,6 +453,21 @@ function appendStatusLink(bookingId) {
   const link = document.createElement("a");
   link.href = `status.html?id=${encodeURIComponent(bookingId)}`;
   link.textContent = "Acompanhar meu agendamento";
+  link.className = "status-link";
+  bookingSuccess.appendChild(document.createElement("br"));
+  bookingSuccess.appendChild(link);
+}
+
+function appendPaymentLink(paymentUrl) {
+  if (!bookingSuccess) {
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.href = paymentUrl;
+  link.target = "_blank";
+  link.rel = "noreferrer";
+  link.textContent = "Abrir pagamento do Mercado Pago";
   link.className = "status-link";
   bookingSuccess.appendChild(document.createElement("br"));
   bookingSuccess.appendChild(link);

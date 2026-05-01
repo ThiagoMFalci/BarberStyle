@@ -3,6 +3,7 @@ const servicesStorageKey = "barberstyle_services";
 const scheduleStorageKey = "barberstyle_schedule";
 const sessionStorageKey = "barberstyle_customer_session";
 const defaultApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "https://barberstyle-mvqd.onrender.com" : "");
+const dashboardRefreshInterval = 15000;
 
 const defaultServices = [
   { id: "corte", name: "Corte masculino", description: "Corte completo", price: 65, duration: 45, active: true },
@@ -41,6 +42,8 @@ let services = load(servicesStorageKey, defaultServices);
 let schedule = load(scheduleStorageKey, defaultSchedule);
 let adminApiUrl = "";
 let adminToken = "";
+let dashboardRefreshTimer = null;
+let isRefreshingDashboard = false;
 
 const today = getTodayDate();
 dateFilter.value = today;
@@ -135,35 +138,74 @@ async function initAdminSession() {
   apiMessage.textContent = "Conectando com a sessao do proprietario...";
   try {
     await loadApiDashboardData();
+    startDashboardAutoRefresh();
   } catch (error) {
     apiMessage.textContent = `${error.message} Entre novamente como proprietario ou use o formulario de API abaixo.`;
   }
 }
 
-async function loadApiDashboardData() {
-  const appointmentResponse = await fetch(`${adminApiUrl}/api/agendamentos/admin`, {
-    headers: { Authorization: `Bearer ${adminToken}` },
-  });
-  const payload = await appointmentResponse.json().catch(() => null);
+async function loadApiDashboardData(options = {}) {
+  const { silent = false } = options;
 
-  if (!appointmentResponse.ok) {
-    throw new Error(payload?.message || "Nao foi possivel carregar os agendamentos.");
+  if (!adminApiUrl || !adminToken || isRefreshingDashboard) {
+    return;
   }
 
-  bookings = payload.map(normalizeApiAppointment);
+  isRefreshingDashboard = true;
 
-  const servicesResponse = await fetch(`${adminApiUrl}/api/servicos/admin`, {
-    headers: { Authorization: `Bearer ${adminToken}` },
-  });
-  const servicesPayload = await servicesResponse.json().catch(() => null);
+  try {
+    const appointmentResponse = await fetch(`${adminApiUrl}/api/agendamentos/admin`, {
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    const payload = await appointmentResponse.json().catch(() => null);
 
-  if (servicesResponse.ok && Array.isArray(servicesPayload)) {
-    services = servicesPayload.map(normalizeApiService);
+    if (!appointmentResponse.ok) {
+      throw new Error(payload?.message || "Nao foi possivel carregar os agendamentos.");
+    }
+
+    bookings = payload.map(normalizeApiAppointment);
+
+    const servicesResponse = await fetch(`${adminApiUrl}/api/servicos/admin`, {
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    const servicesPayload = await servicesResponse.json().catch(() => null);
+
+    if (servicesResponse.ok && Array.isArray(servicesPayload)) {
+      services = servicesPayload.map(normalizeApiService);
+    }
+
+    persist();
+    render();
+    if (!silent) {
+      apiMessage.textContent = "Agenda e servicos carregados da API com sucesso.";
+    }
+  } finally {
+    isRefreshingDashboard = false;
+  }
+}
+
+async function refreshApiDashboard(options = {}) {
+  if (!adminApiUrl || !adminToken) {
+    return;
   }
 
-  persist();
-  render();
-  apiMessage.textContent = "Agenda e servicos carregados da API com sucesso.";
+  try {
+    await loadApiDashboardData(options);
+  } catch (error) {
+    if (!options.silent) {
+      apiMessage.textContent = error.message;
+    }
+  }
+}
+
+function startDashboardAutoRefresh() {
+  if (dashboardRefreshTimer) {
+    window.clearInterval(dashboardRefreshTimer);
+  }
+
+  dashboardRefreshTimer = window.setInterval(() => {
+    refreshApiDashboard({ silent: true });
+  }, dashboardRefreshInterval);
 }
 
 function getFilteredBookings() {
@@ -391,6 +433,11 @@ table.addEventListener("click", async (event) => {
   }
 
   if (paymentButton) {
+    if (adminToken) {
+      await updateApiPaymentStatus(paymentButton.dataset.id, paymentButton.dataset.payment);
+      return;
+    }
+
     bookings = bookings.map((booking) => (
       booking.id === paymentButton.dataset.id ? { ...booking, paymentStatus: paymentButton.dataset.payment } : booking
     ));
@@ -438,6 +485,7 @@ async function updateApiAppointmentStatus(id, status) {
     persist();
     render();
     apiMessage.textContent = "Agendamento atualizado com sucesso.";
+    await refreshApiDashboard({ silent: true });
   } catch (error) {
     apiMessage.textContent = error.message;
   }
@@ -459,6 +507,40 @@ async function deleteApiAppointment(id) {
     persist();
     render();
     apiMessage.textContent = "Agendamento excluido com sucesso.";
+    await refreshApiDashboard({ silent: true });
+  } catch (error) {
+    apiMessage.textContent = error.message;
+  }
+}
+
+async function updateApiPaymentStatus(id, paymentStatus) {
+  const apiPaymentStatus = {
+    Pago: "Paid",
+    "Pagamento pendente": "Pending",
+    "Aguardando Mercado Pago": "WaitingMercadoPago",
+    "Pagamento cancelado": "Cancelled",
+    "Pagamento recusado": "Failed",
+    Estornado: "Refunded",
+  }[paymentStatus] || paymentStatus;
+
+  try {
+    const response = await fetch(`${adminApiUrl}/api/agendamentos/admin/${id}/pagamento?paymentStatus=${apiPaymentStatus}`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      throw new Error(payload?.message || "Nao foi possivel atualizar o pagamento.");
+    }
+
+    bookings = bookings.map((booking) => (
+      booking.id === id ? normalizeApiAppointment(payload) : booking
+    ));
+    persist();
+    render();
+    apiMessage.textContent = "Pagamento atualizado com sucesso.";
+    await refreshApiDashboard({ silent: true });
   } catch (error) {
     apiMessage.textContent = error.message;
   }
@@ -475,10 +557,27 @@ clearFiltersButton.addEventListener("click", () => {
   render();
 });
 
-clearDayButton.addEventListener("click", () => {
+clearDayButton.addEventListener("click", async () => {
   const day = dateFilter.value || today;
   const ok = window.confirm(`Excluir todos os agendamentos de ${formatDate(day)} do dashboard?`);
   if (!ok) {
+    return;
+  }
+
+  if (adminToken) {
+    const dayBookings = bookings.filter((booking) => booking.date === day);
+    apiMessage.textContent = "Limpando agendamentos do dia...";
+
+    for (const booking of dayBookings) {
+      try {
+        await deleteApiAppointment(booking.id);
+      } catch {
+        // deleteApiAppointment ja mostra a mensagem quando a API recusa a exclusao.
+      }
+    }
+
+    await refreshApiDashboard({ silent: true });
+    apiMessage.textContent = "Limpeza do dia finalizada.";
     return;
   }
 
@@ -558,6 +657,7 @@ async function saveApiService(id, payload) {
     render();
     apiMessage.textContent = "Servico salvo na API e disponivel para agendamento.";
     serviceMessage.textContent = "Servico salvo na API e disponivel para agendamento.";
+    await refreshApiDashboard({ silent: true });
   } catch (error) {
     apiMessage.textContent = error.message;
     serviceMessage.textContent = error.message;
@@ -613,6 +713,7 @@ async function removeApiService(id) {
     render();
     apiMessage.textContent = "Servico removido da lista publica.";
     serviceMessage.textContent = "Servico removido da lista publica.";
+    await refreshApiDashboard({ silent: true });
   } catch (error) {
     apiMessage.textContent = error.message;
     serviceMessage.textContent = error.message;
@@ -669,6 +770,7 @@ apiLoginForm.addEventListener("submit", async (event) => {
     adminToken = auth.token;
 
     await loadApiDashboardData();
+    startDashboardAutoRefresh();
   } catch (error) {
     apiMessage.textContent = error.message;
   }
