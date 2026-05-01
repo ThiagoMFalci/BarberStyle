@@ -1,4 +1,4 @@
-const apiUrl = "";
+const apiUrl = import.meta.env.VITE_API_URL || "";
 const bookingStorageKey = "barberstyle_bookings";
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id") || params.get("appointmentId");

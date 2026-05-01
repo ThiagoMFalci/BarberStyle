@@ -64,10 +64,19 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
-        policy
-            .WithOrigins(builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? ["http://localhost:3000", "http://localhost:5173"])
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        var origins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>()
+            ?? ["http://localhost:3000", "http://localhost:5173"];
+
+        if (origins.Contains("*"))
+        {
+            policy.AllowAnyOrigin();
+        }
+        else
+        {
+            policy.WithOrigins(origins);
+        }
+
+        policy.AllowAnyHeader().AllowAnyMethod();
     });
 });
 

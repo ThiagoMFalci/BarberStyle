@@ -2,6 +2,7 @@ const bookingStorageKey = "barberstyle_bookings";
 const servicesStorageKey = "barberstyle_services";
 const scheduleStorageKey = "barberstyle_schedule";
 const sessionStorageKey = "barberstyle_customer_session";
+const defaultApiUrl = import.meta.env.VITE_API_URL || "";
 
 const defaultServices = [
   { id: "corte", name: "Corte masculino", description: "Corte completo", price: 65, duration: 45, active: true },
@@ -33,6 +34,7 @@ const scheduleList = document.querySelector("[data-schedule-list]");
 const apiLoginForm = document.querySelector("[data-api-login]");
 const apiMessage = document.querySelector("[data-api-message]");
 const serviceMessage = document.querySelector("[data-service-message]");
+const apiUrlInput = apiLoginForm?.elements.apiUrl;
 
 let bookings = load(bookingStorageKey, []);
 let services = load(servicesStorageKey, defaultServices);
@@ -48,6 +50,10 @@ document.querySelector("[data-current-date]").textContent = new Intl.DateTimeFor
   day: "2-digit",
   month: "long",
 }).format(new Date());
+
+if (apiUrlInput && defaultApiUrl) {
+  apiUrlInput.value = defaultApiUrl;
+}
 
 initAdminSession();
 
@@ -124,7 +130,7 @@ async function initAdminSession() {
     return;
   }
 
-  adminApiUrl = "";
+  adminApiUrl = defaultApiUrl;
   adminToken = session.token;
   apiMessage.textContent = "Conectando com a sessao do proprietario...";
   try {
