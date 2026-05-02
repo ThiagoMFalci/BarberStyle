@@ -38,10 +38,6 @@ const bookingAuthWarning = document.querySelector("[data-booking-auth-warning]")
 const bookingSuccess = document.querySelector("[data-booking-success]");
 const bookingError = document.querySelector("[data-booking-error]");
 const dateInput = document.querySelector("[data-date-input]");
-const datePicker = document.querySelector("[data-date-picker]");
-const dateDisplay = document.querySelector("[data-date-display]");
-const dateLabel = document.querySelector("[data-date-label]");
-const dateCalendar = document.querySelector("[data-date-calendar]");
 const timeSelect = document.querySelector("[data-time-select]");
 const serviceSelect = document.querySelector("[data-service-select]");
 const planLinks = document.querySelectorAll("[data-plan]");
@@ -127,7 +123,6 @@ function initBookingForm() {
     dateInput.min = getTodayDate();
   }
 
-  initBookingDatePicker();
   updateAvailableTimes();
 
   planLinks.forEach((link) => {
@@ -258,9 +253,6 @@ function initBookingForm() {
     );
     appendStatusLink(booking.id);
     bookingForm.reset();
-    if (dateLabel) {
-      dateLabel.textContent = "dd/mm/aaaa";
-    }
     updateAvailableTimes();
 
     if (dateInput) {
@@ -274,107 +266,6 @@ function initBookingForm() {
       bookingError.hidden = true;
     }
   });
-}
-
-function initBookingDatePicker() {
-  if (!dateInput || !datePicker || !dateDisplay || !dateLabel || !dateCalendar) {
-    return;
-  }
-
-  let visibleMonth = dateInput.value ? new Date(`${dateInput.value}T12:00:00`) : new Date();
-  visibleMonth.setDate(1);
-
-  const closeCalendar = () => {
-    datePicker.classList.remove("is-open");
-    dateCalendar.hidden = true;
-  };
-
-  const openCalendar = () => {
-    renderBookingCalendar(visibleMonth);
-    datePicker.classList.add("is-open");
-    dateCalendar.hidden = false;
-  };
-
-  dateDisplay.addEventListener("click", () => {
-    dateCalendar.hidden ? openCalendar() : closeCalendar();
-  });
-
-  dateCalendar.addEventListener("click", (event) => {
-    const previous = event.target.closest("[data-calendar-prev]");
-    const next = event.target.closest("[data-calendar-next]");
-    const dayButton = event.target.closest("[data-calendar-day]");
-
-    if (previous) {
-      visibleMonth.setMonth(visibleMonth.getMonth() - 1);
-      renderBookingCalendar(visibleMonth);
-      return;
-    }
-
-    if (next) {
-      visibleMonth.setMonth(visibleMonth.getMonth() + 1);
-      renderBookingCalendar(visibleMonth);
-      return;
-    }
-
-    if (dayButton) {
-      dateInput.value = dayButton.dataset.date;
-      dateLabel.textContent = formatInputDate(dayButton.dataset.date);
-      dateInput.dispatchEvent(new Event("change", { bubbles: true }));
-      closeCalendar();
-    }
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!datePicker.contains(event.target)) {
-      closeCalendar();
-    }
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeCalendar();
-    }
-  });
-}
-
-function renderBookingCalendar(monthDate) {
-  if (!dateCalendar) {
-    return;
-  }
-
-  const monthLabel = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(monthDate);
-  const firstDay = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
-  const startOffset = firstDay.getDay();
-  const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
-  const minDate = getTodayDate();
-  const today = getTodayDate();
-  const cells = [];
-
-  for (let index = 0; index < startOffset; index += 1) {
-    cells.push('<span aria-hidden="true"></span>');
-  }
-
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    const value = toInputDate(new Date(monthDate.getFullYear(), monthDate.getMonth(), day));
-    const selected = value === dateInput.value ? " is-selected" : "";
-    const current = value === today ? " is-today" : "";
-    const disabled = value < minDate ? " disabled" : "";
-    cells.push(`<button class="calendar-day${selected}${current}" type="button" data-calendar-day data-date="${value}"${disabled}>${day}</button>`);
-  }
-
-  dateCalendar.innerHTML = `
-    <div class="calendar-head">
-      <strong>${monthLabel}</strong>
-      <span class="calendar-nav">
-        <button type="button" data-calendar-prev aria-label="Mes anterior">‹</button>
-        <button type="button" data-calendar-next aria-label="Proximo mes">›</button>
-      </span>
-    </div>
-    <div class="calendar-week" aria-hidden="true">
-      <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sab</span>
-    </div>
-    <div class="calendar-grid">${cells.join("")}</div>
-  `;
 }
 
 async function loadApiServices() {
@@ -649,14 +540,6 @@ function formatCurrency(value) {
 }
 
 function validateBooking({ date, time, barber }) {
-  if (!date) {
-    return "Escolha uma data para continuar.";
-  }
-
-  if (!time) {
-    return "Escolha um horario para continuar.";
-  }
-
   if (isPastSlot(date, time)) {
     return "Escolha um horario futuro. Nao e possivel agendar um horario anterior ao momento atual.";
   }
@@ -719,20 +602,12 @@ function isPastSlot(date, time) {
 }
 
 function getTodayDate() {
-  return toInputDate(new Date());
-}
-
-function toInputDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
-}
-
-function formatInputDate(value) {
-  const [year, month, day] = value.split("-");
-  return `${day}/${month}/${year}`;
 }
 
 function showBookingMessage(message, type) {
