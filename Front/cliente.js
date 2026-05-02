@@ -1,9 +1,11 @@
-const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "https://barberstyle-mvqd.onrender.com" : "");
+import { applyBrandConfig, applyThemeConfig, siteConfig } from "./site-config.js";
+
+const apiUrl = siteConfig.api.url;
 const sessionKey = "barberstyle_customer_session";
 const usersKey = "barberstyle_customer_users";
 const bookingKey = "barberstyle_bookings";
 const scheduleKey = "barberstyle_schedule";
-const defaultSchedule = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00", "19:00"];
+const defaultSchedule = siteConfig.defaultSchedule;
 const appointmentsRefreshInterval = 15000;
 
 const authPanel = document.querySelector("[data-auth-panel]");
@@ -31,6 +33,8 @@ let appointmentsRefreshTimer = null;
 init();
 
 function init() {
+  applyThemeConfig();
+  applyBrandConfig();
   populateTimes();
   bindEvents();
   applyInitialAuthTab();

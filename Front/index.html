@@ -30,10 +30,10 @@
     <header class="site-header" data-header>
       <nav class="nav container" aria-label="Navegacao principal">
         <a class="brand" href="#inicio" aria-label="BarberStyle inicio">
-          <span class="brand-mark">BS</span>
+          <span class="brand-mark" data-brand-initials>BS</span>
           <span>
             <strong data-brand-name>BarberStyle</strong>
-            <small>Barbearia Premium</small>
+            <small data-brand-tagline>Barbearia Premium</small>
           </span>
         </a>
 
@@ -78,7 +78,7 @@
         <div class="hero-bg" role="img" aria-label="Ambiente sofisticado de uma barbearia premium"></div>
         <div class="hero-overlay"></div>
         <div class="container hero-content reveal">
-          <p class="eyebrow">Desde 2016 • Atendimento com hora marcada</p>
+          <p class="eyebrow"><span data-founded-text>Desde 2016</span> • <span data-schedule-label>Atendimento com hora marcada</span></p>
           <h1>Mais que um corte. Uma experiencia de respeito.</h1>
           <p class="hero-copy">
             Barbearia premium para homens que valorizam estilo, cuidado e presenca em cada detalhe.
@@ -89,16 +89,16 @@
           </div>
           <div class="hero-stats" aria-label="Destaques da barbearia">
             <div>
-              <strong>10k+</strong>
-              <span>clientes atendidos</span>
+              <strong data-stat-value="0">10k+</strong>
+              <span data-stat-label="0">clientes atendidos</span>
             </div>
             <div>
-              <strong>4.9</strong>
-              <span>avaliacao media</span>
+              <strong data-stat-value="1">4.9</strong>
+              <span data-stat-label="1">avaliacao media</span>
             </div>
             <div>
-              <strong>24h</strong>
-              <span>agenda online no site</span>
+              <strong data-stat-value="2">24h</strong>
+              <span data-stat-label="2">agenda online no site</span>
             </div>
           </div>
         </div>
@@ -414,10 +414,10 @@
       <div class="container footer-grid">
         <div>
           <a class="brand footer-brand" href="#inicio">
-            <span class="brand-mark">BS</span>
+            <span class="brand-mark" data-brand-initials>BS</span>
             <span>
               <strong data-brand-name>BarberStyle</strong>
-              <small>Barbearia Premium</small>
+              <small data-brand-tagline>Barbearia Premium</small>
             </span>
           </a>
           <p>
@@ -430,8 +430,10 @@
         </div>
         <div>
           <h3>Horario</h3>
-          <p>Segunda a sexta: 10h as 20h</p>
-          <p>Sabado: 8h as 16h</p>
+          <div data-opening-hours>
+            <p>Segunda a sexta: 10h as 20h</p>
+            <p>Sabado: 8h as 16h</p>
+          </div>
         </div>
         <div>
           <h3>Contato</h3>
@@ -449,7 +451,7 @@
         </div>
       </div>
       <div class="container footer-bottom">
-        <span>© 2026 BarberStyle. Todos os direitos reservados.</span>
+        <span>© <span data-current-year>2026</span> <span data-brand-name>BarberStyle</span>. Todos os direitos reservados.</span>
         <span>Site institucional premium para apresentacao.</span>
       </div>
     </footer>

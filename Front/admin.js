@@ -1,8 +1,10 @@
+import { applyBrandConfig, applyThemeConfig, siteConfig } from "./site-config.js";
+
 const bookingStorageKey = "barberstyle_bookings";
 const servicesStorageKey = "barberstyle_services";
 const scheduleStorageKey = "barberstyle_schedule";
 const sessionStorageKey = "barberstyle_customer_session";
-const defaultApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "https://barberstyle-mvqd.onrender.com" : "");
+const defaultApiUrl = siteConfig.api.url;
 const dashboardRefreshInterval = 15000;
 
 const defaultServices = [
@@ -16,7 +18,7 @@ const defaultServices = [
   { id: "plano-premium", name: "Plano Premium", description: "Clube mensal", price: 149.9, duration: 75, active: true },
   { id: "plano-executivo", name: "Plano Executivo", description: "Clube mensal", price: 229.9, duration: 90, active: true },
 ];
-const defaultSchedule = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00", "19:00"];
+const defaultSchedule = siteConfig.defaultSchedule;
 
 const table = document.querySelector("[data-booking-table]");
 const logTable = document.querySelector("[data-log-table]");
@@ -52,6 +54,9 @@ let adminToken = "";
 let dashboardRefreshTimer = null;
 let isRefreshingDashboard = false;
 let highlightedBookingId = "";
+
+applyThemeConfig();
+applyBrandConfig();
 
 const today = getTodayDate();
 dateFilter.value = today;

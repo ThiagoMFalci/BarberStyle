@@ -391,7 +391,7 @@ select {
 }
 
 .hero-bg {
-  background-image: url("https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=2200&q=88");
+  background-image: var(--hero-image);
   background-position: center;
   background-size: cover;
   transform: scale(1.03);
@@ -1006,7 +1006,7 @@ h3 {
   padding: 96px 0;
   background:
     linear-gradient(90deg, rgba(8, 9, 11, 0.93), rgba(8, 9, 11, 0.68)),
-    url("https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=1800&q=85") center / cover;
+    var(--final-cta-image) center / cover;
 }
 
 .final-cta-inner {

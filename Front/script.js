@@ -1,4 +1,6 @@
-const siteConfig = {
+import { applyBrandConfig, applyThemeConfig, siteConfig } from "./site-config.js";
+
+const legacySiteConfig = {
   brandName: "BarberStyle",
   apiUrl: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "https://barberstyle-mvqd.onrender.com" : ""),
   whatsappNumber: "5511999999999",
@@ -12,7 +14,7 @@ const bookingStorageKey = "barberstyle_bookings";
 const customerSessionKey = "barberstyle_customer_session";
 const servicesStorageKey = "barberstyle_services";
 const scheduleStorageKey = "barberstyle_schedule";
-const availableBarbers = ["Ton Barber", "Michael Trindade", "Valdir Bispo"];
+const availableBarbers = siteConfig.defaultBarbers;
 const defaultServices = [
   { id: "corte", name: "Corte masculino", price: 65, duration: 45, active: true },
   { id: "barba", name: "Barba completa", price: 45, duration: 30, active: true },
@@ -24,7 +26,7 @@ const defaultServices = [
   { id: "plano-premium", name: "Plano Premium", price: 149.9, duration: 75, active: true },
   { id: "plano-executivo", name: "Plano Executivo", price: 229.9, duration: 90, active: true },
 ];
-const defaultSchedule = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00", "19:00"];
+const defaultSchedule = siteConfig.defaultSchedule;
 
 const header = document.querySelector("[data-header]");
 const menuToggle = document.querySelector("[data-menu-toggle]");
@@ -51,28 +53,17 @@ const accountAppointments = document.querySelector("[data-account-appointments]"
 const accountLogout = document.querySelector("[data-account-logout]");
 
 function applyConfig() {
-  document.querySelectorAll("[data-brand-name]").forEach((element) => {
-    element.textContent = siteConfig.brandName;
-  });
+  applyThemeConfig();
+  applyBrandConfig();
 
-  document.querySelectorAll("[data-address]").forEach((element) => {
-    element.textContent = siteConfig.address;
-  });
+  document.querySelector("[data-founded-text]")?.replaceChildren(siteConfig.business.foundedText);
+  document.querySelector("[data-schedule-label]")?.replaceChildren(siteConfig.business.scheduleLabel);
 
-  document.querySelectorAll("[data-instagram-link]").forEach((element) => {
-    element.href = siteConfig.instagramUrl;
-  });
-
-  document.querySelectorAll("[data-whatsapp-text]").forEach((element) => {
-    element.textContent = siteConfig.whatsappDisplay;
-  });
-
-  const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(siteConfig.whatsappText)}`;
-
-  whatsappLinks.forEach((link) => {
-    link.href = whatsappUrl;
-    link.target = "_blank";
-    link.rel = "noreferrer";
+  siteConfig.business.stats.forEach((stat, index) => {
+    const value = document.querySelector(`[data-stat-value="${index}"]`);
+    const label = document.querySelector(`[data-stat-label="${index}"]`);
+    if (value) value.textContent = stat.value;
+    if (label) label.textContent = stat.label;
   });
 }
 
@@ -279,7 +270,7 @@ function initBookingForm() {
 
 async function loadApiServices() {
   try {
-    const response = await fetch(`${siteConfig.apiUrl}/api/servicos`);
+    const response = await fetch(`${siteConfig.api.url}/api/servicos`);
     const payload = await response.json().catch(() => null);
 
     if (!response.ok || !Array.isArray(payload)) {
@@ -408,7 +399,7 @@ function closeAccountMenu() {
 
 async function createApiBooking(booking) {
   try {
-    const response = await fetch(`${siteConfig.apiUrl}/api/agendamentos/publico`, {
+    const response = await fetch(`${siteConfig.api.url}/api/agendamentos/publico`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
