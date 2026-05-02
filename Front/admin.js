@@ -41,6 +41,10 @@ const serviceForm = document.querySelector("[data-service-form]");
 const serviceList = document.querySelector("[data-service-list]");
 const scheduleForm = document.querySelector("[data-schedule-form]");
 const scheduleList = document.querySelector("[data-schedule-list]");
+const adminTimePicker = document.querySelector("[data-admin-time-picker]");
+const adminTimeInput = document.querySelector("[data-admin-time-input]");
+const adminTimeTrigger = document.querySelector("[data-admin-time-trigger]");
+const adminTimeMenu = document.querySelector("[data-admin-time-menu]");
 const apiLoginForm = document.querySelector("[data-api-login]");
 const apiMessage = document.querySelector("[data-api-message]");
 const serviceMessage = document.querySelector("[data-service-message]");
@@ -72,6 +76,7 @@ if (apiUrlInput && defaultApiUrl) {
 }
 
 initAdminSession();
+initAdminTimePicker();
 
 function load(key, fallback) {
   return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
@@ -450,6 +455,79 @@ function renderSchedule() {
     chip.innerHTML = `${time} <button type="button" data-remove-time="${time}" aria-label="Remover ${time}">x</button>`;
     scheduleList.appendChild(chip);
   });
+}
+
+function initAdminTimePicker() {
+  if (!adminTimePicker || !adminTimeInput || !adminTimeTrigger || !adminTimeMenu) {
+    return;
+  }
+
+  const closeMenu = () => {
+    adminTimePicker.classList.remove("is-open");
+    adminTimeMenu.hidden = true;
+  };
+
+  const openMenu = () => {
+    renderAdminTimeMenu();
+    adminTimePicker.classList.add("is-open");
+    adminTimeMenu.hidden = false;
+  };
+
+  adminTimeInput.addEventListener("click", openMenu);
+  adminTimeTrigger.addEventListener("click", () => {
+    adminTimeMenu.hidden ? openMenu() : closeMenu();
+  });
+
+  adminTimeMenu.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-time-value]");
+    if (!option) {
+      return;
+    }
+
+    adminTimeInput.value = option.dataset.timeValue;
+    adminTimeInput.dispatchEvent(new Event("input", { bubbles: true }));
+    closeMenu();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!adminTimePicker.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
+}
+
+function renderAdminTimeMenu() {
+  if (!adminTimeMenu) {
+    return;
+  }
+
+  const suggestions = buildTimeSuggestions();
+  adminTimeMenu.innerHTML = `
+    <p class="time-menu-title">Escolha um horario</p>
+    <div class="time-menu-grid">
+      ${suggestions.map((time) => {
+        const active = time === adminTimeInput.value ? " is-active" : "";
+        return `<button class="time-option${active}" type="button" data-time-value="${time}">${time}</button>`;
+      }).join("")}
+    </div>
+  `;
+}
+
+function buildTimeSuggestions() {
+  const values = new Set(schedule);
+
+  for (let hour = 8; hour <= 21; hour += 1) {
+    values.add(`${String(hour).padStart(2, "0")}:00`);
+    values.add(`${String(hour).padStart(2, "0")}:30`);
+  }
+
+  return [...values].sort();
 }
 
 function sum(items) {

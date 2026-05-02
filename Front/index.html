@@ -368,7 +368,18 @@
             <div class="field-grid">
               <label>
                 Data
-                <input name="date" type="date" required data-date-input />
+                <div class="date-picker" data-date-picker>
+                  <input name="date" type="hidden" required data-date-input />
+                  <button class="date-picker-display" type="button" data-date-display aria-label="Escolher data">
+                    <span data-date-label>dd/mm/aaaa</span>
+                    <span class="picker-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="M7 3v3M17 3v3M4 9h16M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
+                      </svg>
+                    </span>
+                  </button>
+                  <div class="date-calendar" data-date-calendar hidden></div>
+                </div>
               </label>
               <label>
                 Horario

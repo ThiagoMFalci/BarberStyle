@@ -745,6 +745,105 @@ td span {
   padding: 18px 22px;
 }
 
+.time-picker {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 44px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.time-picker:focus-within,
+.time-picker.is-open {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 164, 95, 0.14);
+}
+
+.time-picker input {
+  min-height: 44px;
+  border: 0;
+  border-radius: 14px 0 0 14px;
+  background: transparent;
+  font-weight: 900;
+}
+
+.time-picker input:focus {
+  box-shadow: none;
+}
+
+.time-picker-trigger {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 5px;
+  border: 1px solid rgba(201, 164, 95, 0.34);
+  border-radius: 11px;
+  background: rgba(201, 164, 95, 0.1);
+  color: #7a5a19;
+  cursor: pointer;
+}
+
+.time-picker-trigger svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
+.time-menu {
+  position: absolute;
+  z-index: 15;
+  top: calc(100% + 10px);
+  left: 0;
+  width: min(300px, calc(100vw - 44px));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 12px;
+  background: #101112;
+  color: #fff;
+  box-shadow: 0 24px 60px rgba(20, 17, 11, 0.24);
+}
+
+.time-menu-title {
+  margin: 0 0 10px;
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.time-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.time-option {
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.time-option:hover,
+.time-option:focus-visible,
+.time-option.is-active {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: #17130a;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -755,12 +854,23 @@ td span {
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 8px 10px 8px 14px;
-  background: #fff;
+  padding: 8px 8px 8px 16px;
+  background: linear-gradient(180deg, #fff 0%, #fbfaf7 100%);
+  box-shadow: 0 10px 24px rgba(20, 17, 11, 0.06);
   font-weight: 900;
+}
+
+.chip button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 999px;
+  background: #fff7f7;
 }
 
 .api-panel .api-login {
@@ -927,6 +1037,23 @@ code {
   .api-panel,
   .schedule-form {
     padding-inline: 14px;
+  }
+
+  .time-menu {
+    position: fixed;
+    inset: auto 14px 18px;
+    width: auto;
+    max-height: calc(100svh - 96px);
+    overflow: auto;
+    border-radius: 22px;
+  }
+
+  .time-menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .time-option {
+    min-height: 48px;
   }
 
   .service-item {
