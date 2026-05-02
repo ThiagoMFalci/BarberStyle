@@ -51,7 +51,16 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
     }
 
     private string? GetSetting(string sectionKey, string flatKey)
-        => configuration[$"Smtp:{sectionKey}"] ?? configuration[flatKey];
+    {
+        var sectionValue = configuration[$"Smtp:{sectionKey}"];
+        if (!string.IsNullOrWhiteSpace(sectionValue))
+        {
+            return sectionValue;
+        }
+
+        var flatValue = configuration[flatKey];
+        return string.IsNullOrWhiteSpace(flatValue) ? null : flatValue;
+    }
 
     private static string BuildPasswordResetBody(string customerName, string resetUrl)
     {
