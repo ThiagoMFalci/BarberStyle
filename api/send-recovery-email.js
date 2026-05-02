@@ -18,20 +18,81 @@ const escapeHtml = (value = "") =>
 const buildPasswordResetBody = ({ customerName, resetUrl }) => {
   const safeName = escapeHtml(customerName || "cliente");
   const safeUrl = escapeHtml(resetUrl);
+  const year = new Date().getFullYear();
 
   return `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111216">
-      <h2 style="margin:0 0 12px">Recuperacao de senha</h2>
-      <p>Ola, ${safeName}.</p>
-      <p>Recebemos uma solicitacao para redefinir sua senha da BarberStyle.</p>
-      <p>
-        <a href="${safeUrl}" style="display:inline-block;background:#c9a45f;color:#15100a;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:700">
-          Criar nova senha
-        </a>
-      </p>
-      <p>Este link expira em 1 hora. Se voce nao solicitou a recuperacao, ignore este email.</p>
-      <p style="font-size:12px;color:#736b5f">Se o botao nao abrir, copie e cole este link no navegador:<br>${safeUrl}</p>
-    </div>
+    <!doctype html>
+    <html lang="pt-BR">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Recuperacao de senha BarberStyle</title>
+      </head>
+      <body style="margin:0;padding:0;background:#f4efe5;font-family:Arial,Helvetica,sans-serif;color:#111216;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;background:#f4efe5;padding:32px 14px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;width:100%;border-collapse:collapse;">
+                <tr>
+                  <td style="padding:0 0 18px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="vertical-align:middle;">
+                          <div style="display:inline-block;width:46px;height:46px;border:1px solid rgba(201,164,95,.55);border-radius:8px;background:#111216;color:#e1c47e;text-align:center;line-height:46px;font-family:Georgia,serif;font-weight:800;font-size:18px;">BS</div>
+                          <span style="display:inline-block;margin-left:12px;vertical-align:middle;">
+                            <strong style="display:block;color:#111216;font-size:18px;line-height:1.2;">BarberStyle</strong>
+                            <span style="display:block;color:#736b5f;font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;">Barbearia Premium</span>
+                          </span>
+                        </td>
+                        <td align="right" style="vertical-align:middle;color:#8a7650;font-size:12px;font-weight:800;text-transform:uppercase;">Conta segura</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="border-radius:12px;overflow:hidden;background:#111216;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="padding:34px 34px 28px;background:#111216;color:#ffffff;">
+                          <div style="margin:0 0 12px;color:#e1c47e;font-size:12px;font-weight:900;text-transform:uppercase;">Recuperacao de senha</div>
+                          <h1 style="margin:0;font-family:Georgia,serif;font-size:36px;line-height:1.05;color:#ffffff;">Vamos recuperar seu acesso.</h1>
+                          <p style="margin:18px 0 0;color:#d8d0c2;font-size:16px;line-height:1.65;">Ola, ${safeName}. Recebemos uma solicitacao para criar uma nova senha para sua conta BarberStyle.</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:30px 34px;background:#ffffff;">
+                          <p style="margin:0 0 22px;color:#4c463e;font-size:15px;line-height:1.7;">Clique no botao abaixo para escolher uma nova senha. Por seguranca, este link expira em <strong>1 hora</strong>.</p>
+                          <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 24px;">
+                            <tr>
+                              <td style="border-radius:8px;background:#c9a45f;">
+                                <a href="${safeUrl}" style="display:inline-block;padding:14px 22px;border-radius:8px;background:#c9a45f;color:#15100a;font-size:15px;font-weight:900;text-decoration:none;">Criar nova senha</a>
+                              </td>
+                            </tr>
+                          </table>
+                          <div style="border-left:4px solid #c9a45f;padding:12px 14px;background:#fbf7ee;border-radius:8px;color:#5f533f;font-size:13px;line-height:1.55;">
+                            Se voce nao solicitou essa recuperacao, pode ignorar este email. Sua senha atual continuara a mesma.
+                          </div>
+                          <p style="margin:22px 0 0;color:#736b5f;font-size:12px;line-height:1.6;">Se o botao nao abrir, copie e cole este link no navegador:</p>
+                          <p style="margin:6px 0 0;word-break:break-all;color:#8a7650;font-size:12px;line-height:1.5;">${safeUrl}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:18px 34px;background:#faf7ef;color:#736b5f;font-size:12px;line-height:1.6;">
+                          <strong style="color:#111216;">BarberStyle</strong><br />
+                          Atendimento premium, agenda online e cuidado em cada detalhe.<br />
+                          © ${year} BarberStyle. Todos os direitos reservados.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
   `;
 };
 
@@ -74,7 +135,7 @@ export default async function handler(request, response) {
   await transporter.sendMail({
     from: `"${process.env.SMTP_DISPLAY_NAME || "BarberStyle"}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
     to: toEmail,
-    subject: "Recuperacao de senha BarberStyle",
+    subject: "Recupere sua senha | BarberStyle",
     html: buildPasswordResetBody({ customerName, resetUrl }),
   });
 
