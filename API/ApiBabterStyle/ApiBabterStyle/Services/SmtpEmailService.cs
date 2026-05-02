@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Sockets;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -43,7 +44,9 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
         };
 
         var socketOptions = GetSocketOptions(port, enableSsl);
-        await client.ConnectAsync(host, port, socketOptions, cancellationToken);
+        using var socket = await ConnectIpv4SocketAsync(host, port, cancellationToken);
+        using var stream = new NetworkStream(socket, ownsSocket: false);
+        await client.ConnectAsync(stream, host, port, socketOptions, cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
         {
@@ -77,6 +80,35 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
         return port == 465
             ? SecureSocketOptions.SslOnConnect
             : SecureSocketOptions.StartTls;
+    }
+
+    private static async Task<Socket> ConnectIpv4SocketAsync(string host, int port, CancellationToken cancellationToken)
+    {
+        var addresses = await Dns.GetHostAddressesAsync(host, AddressFamily.InterNetwork, cancellationToken);
+        var lastError = default(Exception);
+
+        foreach (var address in addresses)
+        {
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            {
+                NoDelay = true
+            };
+
+            try
+            {
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(12));
+                using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
+                await socket.ConnectAsync(address, port, linked.Token);
+                return socket;
+            }
+            catch (Exception error)
+            {
+                lastError = error;
+                socket.Dispose();
+            }
+        }
+
+        throw new TimeoutException($"Nao foi possivel conectar ao SMTP {host}:{port} via IPv4.", lastError);
     }
 
     private static string BuildPasswordResetBody(string customerName, string resetUrl)
