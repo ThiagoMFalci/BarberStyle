@@ -1,5 +1,7 @@
 using System.Net;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace ApiBabterStyle.Services;
 
@@ -26,28 +28,31 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
         var fromName = GetSetting("FromName", "SmtpDisplayName") ?? "BarberStyle";
         var enableSsl = !bool.TryParse(GetSetting("EnableSsl", "SmtpEnableSsl"), out var configuredSsl) || configuredSsl;
 
-        using var message = new MailMessage
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(fromName, fromEmail));
+        message.To.Add(MailboxAddress.Parse(toEmail));
+        message.Subject = "Recuperacao de senha BarberStyle";
+        message.Body = new BodyBuilder
         {
-            From = new MailAddress(fromEmail, fromName),
-            Subject = "Recuperacao de senha BarberStyle",
-            IsBodyHtml = true,
-            Body = BuildPasswordResetBody(customerName, resetUrl)
+            HtmlBody = BuildPasswordResetBody(customerName, resetUrl)
+        }.ToMessageBody();
+
+        using var client = new SmtpClient
+        {
+            Timeout = 15000
         };
 
-        message.To.Add(toEmail);
+        var socketOptions = GetSocketOptions(port, enableSsl);
+        await client.ConnectAsync(host, port, socketOptions, cancellationToken);
 
-        using var client = new SmtpClient(host, port)
+        if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
         {
-            EnableSsl = enableSsl
-        };
-
-        if (!string.IsNullOrWhiteSpace(username))
-        {
-            client.Credentials = new NetworkCredential(username, password);
+            await client.AuthenticateAsync(username, password, cancellationToken);
         }
 
         logger.LogInformation("Enviando email de recuperacao de senha para {Email}", toEmail);
-        await client.SendMailAsync(message, cancellationToken);
+        await client.SendAsync(message, cancellationToken);
+        await client.DisconnectAsync(true, cancellationToken);
     }
 
     private string? GetSetting(string sectionKey, string flatKey)
@@ -60,6 +65,18 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
 
         var flatValue = configuration[flatKey];
         return string.IsNullOrWhiteSpace(flatValue) ? null : flatValue;
+    }
+
+    private static SecureSocketOptions GetSocketOptions(int port, bool enableSsl)
+    {
+        if (!enableSsl)
+        {
+            return SecureSocketOptions.None;
+        }
+
+        return port == 465
+            ? SecureSocketOptions.SslOnConnect
+            : SecureSocketOptions.StartTls;
     }
 
     private static string BuildPasswordResetBody(string customerName, string resetUrl)
