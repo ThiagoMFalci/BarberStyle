@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Net.Sockets;
+using ApiBabterStyle.Model;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -70,6 +71,61 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
         await client.DisconnectAsync(true, cancellationToken);
     }
 
+    public async Task SendPaymentConfirmationAsync(Appointment appointment, CancellationToken cancellationToken)
+    {
+        if (!IsConfigured)
+        {
+            throw new InvalidOperationException("SMTP nao configurado.");
+        }
+
+        if (appointment.User is null || string.IsNullOrWhiteSpace(appointment.User.Email))
+        {
+            return;
+        }
+
+        if (IsEmailProxyConfigured)
+        {
+            await SendPaymentConfirmationByProxyAsync(appointment, cancellationToken);
+            return;
+        }
+
+        var host = GetSetting("Host", "SmtpHost")!;
+        var port = int.TryParse(GetSetting("Port", "SmtpPort"), out var configuredPort) ? configuredPort : 587;
+        var username = GetSetting("Username", "SmtpUser");
+        var password = GetSetting("Password", "SmtpPassword");
+        var fromEmail = GetSetting("FromEmail", "SmtpFrom")!;
+        var fromName = GetSetting("FromName", "SmtpDisplayName") ?? "BarberStyle";
+        var enableSsl = !bool.TryParse(GetSetting("EnableSsl", "SmtpEnableSsl"), out var configuredSsl) || configuredSsl;
+
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(fromName, fromEmail));
+        message.To.Add(MailboxAddress.Parse(appointment.User.Email));
+        message.Subject = "Pagamento confirmado | BarberStyle";
+        message.Body = new BodyBuilder
+        {
+            HtmlBody = BuildPaymentConfirmationBody(appointment)
+        }.ToMessageBody();
+
+        using var client = new SmtpClient
+        {
+            Timeout = 15000
+        };
+
+        var socketOptions = GetSocketOptions(port, enableSsl);
+        using var socket = await ConnectIpv4SocketAsync(host, port, cancellationToken);
+        using var stream = new NetworkStream(socket, ownsSocket: false);
+        await client.ConnectAsync(stream, host, port, socketOptions, cancellationToken);
+
+        if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+        {
+            await client.AuthenticateAsync(username, password, cancellationToken);
+        }
+
+        logger.LogInformation("Enviando confirmacao de pagamento para {Email}", appointment.User.Email);
+        await client.SendAsync(message, cancellationToken);
+        await client.DisconnectAsync(true, cancellationToken);
+    }
+
     private async Task SendPasswordResetByProxyAsync(string toEmail, string customerName, string resetUrl, CancellationToken cancellationToken)
     {
         var proxyUrl = configuration["EmailProxy:Url"] ?? configuration["EmailProxyUrl"]!;
@@ -100,6 +156,45 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
         }
 
         logger.LogInformation("Email de recuperacao enviado via proxy para {Email}", toEmail);
+    }
+
+    private async Task SendPaymentConfirmationByProxyAsync(Appointment appointment, CancellationToken cancellationToken)
+    {
+        var proxyUrl = configuration["EmailProxy:Url"] ?? configuration["EmailProxyUrl"]!;
+        var proxySecret = configuration["EmailProxy:Secret"] ?? configuration["EmailProxySecret"]!;
+        var frontendBaseUrl = configuration["MercadoPago:FrontendBaseUrl"] ?? configuration["Frontend:BaseUrl"] ?? "http://127.0.0.1:5173";
+
+        using var httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(30)
+        };
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, proxyUrl)
+        {
+            Content = JsonContent.Create(new
+            {
+                type = "payment-confirmation",
+                toEmail = appointment.User!.Email,
+                customerName = appointment.User.Name,
+                serviceName = appointment.Service?.Name,
+                barberName = appointment.Barber?.Name,
+                scheduledAt = appointment.ScheduledAt,
+                amount = appointment.Service?.Price ?? 0,
+                appointmentId = appointment.Id,
+                customerAreaUrl = $"{frontendBaseUrl.TrimEnd('/')}/cliente.html"
+            })
+        };
+
+        request.Headers.Add("x-email-proxy-secret", proxySecret);
+
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            var message = await response.Content.ReadAsStringAsync(cancellationToken);
+            throw new InvalidOperationException($"Proxy de email retornou {(int)response.StatusCode}: {message}");
+        }
+
+        logger.LogInformation("Confirmacao de pagamento enviada via proxy para {Email}", appointment.User!.Email);
     }
 
     private string? GetSetting(string sectionKey, string flatKey)
@@ -172,6 +267,32 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
               </p>
               <p>Este link expira em 1 hora. Se voce nao solicitou a recuperacao, ignore este email.</p>
               <p style="font-size:12px;color:#736b5f">Se o botao nao abrir, copie e cole este link no navegador:<br>{safeUrl}</p>
+            </div>
+            """;
+    }
+
+    private static string BuildPaymentConfirmationBody(Appointment appointment)
+    {
+        var safeName = WebUtility.HtmlEncode(appointment.User?.Name ?? "cliente");
+        var safeService = WebUtility.HtmlEncode(appointment.Service?.Name ?? "Servico agendado");
+        var safeBarber = WebUtility.HtmlEncode(appointment.Barber?.Name ?? "Profissional da barbearia");
+        var safeDate = WebUtility.HtmlEncode(appointment.ScheduledAt.ToString("dd/MM/yyyy HH:mm"));
+        var safeAmount = WebUtility.HtmlEncode((appointment.Service?.Price ?? 0).ToString("C"));
+        var safeId = WebUtility.HtmlEncode(appointment.Id.ToString());
+
+        return $"""
+            <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111216">
+              <h2 style="margin:0 0 12px">Pagamento confirmado</h2>
+              <p>Ola, {safeName}.</p>
+              <p>Seu pagamento online foi confirmado e seu horario esta garantido.</p>
+              <ul>
+                <li><strong>Servico:</strong> {safeService}</li>
+                <li><strong>Profissional:</strong> {safeBarber}</li>
+                <li><strong>Data e horario:</strong> {safeDate}</li>
+                <li><strong>Valor pago:</strong> {safeAmount}</li>
+                <li><strong>Codigo:</strong> {safeId}</li>
+              </ul>
+              <p style="font-size:12px;color:#736b5f">Este email e uma confirmacao de pagamento e agendamento, nao substitui nota fiscal.</p>
             </div>
             """;
     }

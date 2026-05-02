@@ -14,7 +14,9 @@ namespace ApiBabterStyle.Controller;
 [Route("api/pagamentos/mercado-pago")]
 public class PaymentsController(
     BarberShopDbContext db,
-    MercadoPagoService mercadoPagoService) : ControllerBase
+    MercadoPagoService mercadoPagoService,
+    SmtpEmailService emailService,
+    ILogger<PaymentsController> logger) : ControllerBase
 {
     [Authorize]
     [HttpPost("preferencia")]
@@ -75,6 +77,9 @@ public class PaymentsController(
     {
         var userId = User.GetUserId();
         var appointment = await db.Appointments
+            .Include(item => item.User)
+            .Include(item => item.Barber)
+            .Include(item => item.Service)
             .FirstOrDefaultAsync(item => item.Id == request.AppointmentId && item.UserId == userId, cancellationToken);
 
         if (appointment is null)
@@ -88,8 +93,11 @@ public class PaymentsController(
             return BadRequest(new { message = "Nao foi possivel confirmar o pagamento no Mercado Pago." });
         }
 
+        var shouldSendPaymentEmail = false;
+
         if (verifiedStatus == "approved")
         {
+            shouldSendPaymentEmail = appointment.PaymentStatus != PaymentStatus.Paid;
             appointment.Status = AppointmentStatus.Scheduled;
             appointment.PaymentStatus = PaymentStatus.Paid;
             appointment.MercadoPagoPaymentId = request.PaymentId ?? appointment.MercadoPagoPaymentId;
@@ -104,6 +112,11 @@ public class PaymentsController(
         }
 
         await db.SaveChangesAsync(cancellationToken);
+
+        if (shouldSendPaymentEmail)
+        {
+            await TrySendPaymentConfirmationAsync(appointment, cancellationToken);
+        }
 
         var message = appointment.PaymentStatus == PaymentStatus.Paid
             ? "Pagamento confirmado. Seu agendamento esta marcado como pago."
@@ -133,15 +146,22 @@ public class PaymentsController(
             return Ok();
         }
 
-        var appointment = await db.Appointments.FirstOrDefaultAsync(item => item.Id == payment.AppointmentId.Value, cancellationToken);
+        var appointment = await db.Appointments
+            .Include(item => item.User)
+            .Include(item => item.Barber)
+            .Include(item => item.Service)
+            .FirstOrDefaultAsync(item => item.Id == payment.AppointmentId.Value, cancellationToken);
         if (appointment is null)
         {
             return Ok();
         }
 
+        var shouldSendPaymentEmail = false;
+
         switch (payment.Status.ToLowerInvariant())
         {
             case "approved":
+                shouldSendPaymentEmail = appointment.PaymentStatus != PaymentStatus.Paid;
                 appointment.Status = AppointmentStatus.Scheduled;
                 appointment.PaymentStatus = PaymentStatus.Paid;
                 appointment.MercadoPagoPaymentId = paymentId.Value.ToString();
@@ -160,6 +180,12 @@ public class PaymentsController(
         }
 
         await db.SaveChangesAsync(cancellationToken);
+
+        if (shouldSendPaymentEmail)
+        {
+            await TrySendPaymentConfirmationAsync(appointment, cancellationToken);
+        }
+
         return Ok();
     }
 
@@ -206,6 +232,18 @@ public class PaymentsController(
         catch
         {
             return null;
+        }
+    }
+
+    private async Task TrySendPaymentConfirmationAsync(Appointment appointment, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await emailService.SendPaymentConfirmationAsync(appointment, cancellationToken);
+        }
+        catch (Exception error)
+        {
+            logger.LogError(error, "Falha ao enviar confirmacao de pagamento do agendamento {AppointmentId}", appointment.Id);
         }
     }
 
