@@ -60,14 +60,14 @@ public class SmtpEmailService(IConfiguration configuration, ILogger<SmtpEmailSer
 
     private string? GetSetting(string sectionKey, string flatKey)
     {
-        var sectionValue = configuration[$"Smtp:{sectionKey}"];
-        if (!string.IsNullOrWhiteSpace(sectionValue))
+        var flatValue = configuration[flatKey];
+        if (!string.IsNullOrWhiteSpace(flatValue))
         {
-            return sectionValue;
+            return flatValue;
         }
 
-        var flatValue = configuration[flatKey];
-        return string.IsNullOrWhiteSpace(flatValue) ? null : flatValue;
+        var sectionValue = configuration[$"Smtp:{sectionKey}"];
+        return string.IsNullOrWhiteSpace(sectionValue) ? null : sectionValue;
     }
 
     private static SecureSocketOptions GetSocketOptions(int port, bool enableSsl)
