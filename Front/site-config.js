@@ -12,7 +12,7 @@ export const siteConfig = {
   contact: {
     whatsappNumber: "5511999999999",
     whatsappDisplay: "(11) 99999-9999",
-    whatsappText: "Ola! Quero falar com a BarberStyle.",
+    whatsappText: "Ola, gostaria de agendar um horario.",
     instagramUrl: "https://instagram.com/barberstyle",
     instagramDisplay: "@barberstyle",
     address: "Rua Exemplo, 123 - Centro, Sao Paulo/SP",

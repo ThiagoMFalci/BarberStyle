@@ -19,6 +19,7 @@ export default defineConfig({
         admin: resolve(__dirname, 'admin.html'),
         status: resolve(__dirname, 'status.html'),
         cliente: resolve(__dirname, 'cliente.html'),
+        servico: resolve(__dirname, 'servico.html'),
       },
     },
   },

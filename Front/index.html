@@ -47,8 +47,9 @@
         <div class="nav-panel" id="primary-menu" data-nav-panel>
           <a class="dashboard-link" href="admin.html" data-dashboard-link hidden>Dashboard</a>
           <a href="#servicos">Servicos</a>
-          <a href="#planos">Planos</a>
-          <a href="cliente.html">Meus agendamentos</a>
+          <a href="#experiencia">Experiencia</a>
+          <a href="#galeria">Fotos</a>
+          <a href="#agendamento">Agendamento</a>
           <a class="btn btn-small btn-gold" href="#agendamento">Agendar horario</a>
         </div>
 
@@ -79,13 +80,14 @@
         <div class="hero-overlay"></div>
         <div class="container hero-content reveal">
           <p class="eyebrow"><span data-founded-text>Desde 2016</span> • <span data-schedule-label>Atendimento com hora marcada</span></p>
-          <h1>Mais que um corte. Uma experiencia de respeito.</h1>
+          <h1>Imagem alinhada. Presenca de alto nivel.</h1>
           <p class="hero-copy">
-            Barbearia premium para homens que valorizam estilo, cuidado e presenca em cada detalhe.
+            Corte, barba e cuidado masculino para quem entende que aparencia tambem comunica respeito, seguranca e status.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-gold" href="#agendamento">Agendar agora</a>
-            <a class="btn btn-outline" href="#servicos">Conhecer servicos</a>
+            <a class="btn btn-gold" href="#agendamento">Agendar horario</a>
+            <a class="btn btn-outline" href="#servicos">Ver cortes</a>
+            <a class="btn btn-outline" href="#experiencia">Conhecer experiencia</a>
           </div>
           <div class="hero-stats" aria-label="Destaques da barbearia">
             <div>
@@ -104,21 +106,20 @@
         </div>
       </section>
 
-      <section class="about section" id="sobre">
+      <section class="about section" id="experiencia">
         <div class="container split-grid">
           <div class="section-copy reveal">
-            <p class="eyebrow">Sobre a casa</p>
-            <h2>Tradição, tecnica e ambiente premium para o homem contemporaneo.</h2>
+            <p class="eyebrow">Experiencia BarberStyle</p>
+            <h2>Voce entra para cortar o cabelo. Sai com outra postura.</h2>
             <p>
-              A BarberStyle nasceu para transformar o cuidado masculino em um ritual de presenca.
-              Aqui, cada atendimento combina escuta, precisao e acabamento impecavel em um espaco
-              pensado para desacelerar a rotina.
+              Cada atendimento foi pensado para entregar resultado visivel, conforto e ritmo de alto padrao:
+              consulta rapida, execucao precisa, produtos profissionais e finalizacao pronta para o seu dia.
             </p>
             <p>
-              Nossa equipe e formada por profissionais especializados em visagismo, barba com navalha,
-              cortes classicos e estilos modernos. O resultado e uma experiencia consistente, elegante e
-              personalizada do primeiro cafe a finalizacao.
+              Sem improviso, sem pressa e sem aquele corte generico. O foco e construir um visual que combine
+              com seu rosto, sua rotina e a imagem que voce quer passar.
             </p>
+            <a class="btn btn-outline-dark" href="#agendamento">Agendar experiencia</a>
           </div>
           <div class="about-media reveal">
             <img
@@ -135,9 +136,70 @@
 
       <section class="section services section-graphite" id="servicos">
         <div class="container">
-          <div class="section-heading reveal">
+          <div class="section-heading services-heading reveal">
             <p class="eyebrow">Servicos</p>
-            <h2>Cuidados completos para manter seu visual sempre alinhado.</h2>
+            <h2>Escolha o cuidado certo para o momento certo.</h2>
+            <p>Experiencias objetivas, acabamento premium e agenda online para voce resolver em poucos cliques.</p>
+            <div class="carousel-actions" aria-label="Controles dos servicos">
+              <button type="button" data-service-prev aria-label="Servico anterior">‹</button>
+              <button type="button" data-service-next aria-label="Proximo servico">›</button>
+            </div>
+          </div>
+          <div class="service-carousel reveal" data-service-carousel aria-label="Servicos premium">
+            <article class="service-slide">
+              <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=900&q=85" alt="Corte masculino premium com acabamento" />
+              <div>
+                <span>01</span>
+                <h3>Corte masculino</h3>
+                <p>Visual alinhado ao seu rosto, rotina e presenca.</p>
+                <a class="btn btn-small btn-gold" href="servico.html?tipo=corte">Ver mais</a>
+              </div>
+            </article>
+            <article class="service-slide">
+              <img src="https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?auto=format&fit=crop&w=900&q=85" alt="Barba sendo aparada com acabamento preciso" />
+              <div>
+                <span>02</span>
+                <h3>Barba completa</h3>
+                <p>Contorno limpo, toalha quente e acabamento de respeito.</p>
+                <a class="btn btn-small btn-gold" href="servico.html?tipo=barba">Ver mais</a>
+              </div>
+            </article>
+            <article class="service-slide">
+              <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=900&q=85" alt="Ferramentas premium de barbearia" />
+              <div>
+                <span>03</span>
+                <h3>Corte + barba</h3>
+                <p>O pacote completo para sair pronto para qualquer compromisso.</p>
+                <a class="btn btn-small btn-gold" href="servico.html?tipo=combo">Ver mais</a>
+              </div>
+            </article>
+            <article class="service-slide">
+              <img src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&w=900&q=85" alt="Finalizacao de corte masculino" />
+              <div>
+                <span>04</span>
+                <h3>Sobrancelha</h3>
+                <p>Expressao mais limpa, natural e discreta.</p>
+                <a class="btn btn-small btn-gold" href="servico.html?tipo=sobrancelha">Ver mais</a>
+              </div>
+            </article>
+            <article class="service-slide">
+              <img src="https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?auto=format&fit=crop&w=900&q=85" alt="Produtos profissionais para tratamento capilar" />
+              <div>
+                <span>05</span>
+                <h3>Tratamento capilar</h3>
+                <p>Cuidado para fortalecer fios e elevar o acabamento.</p>
+                <a class="btn btn-small btn-gold" href="servico.html?tipo=tratamento">Ver mais</a>
+              </div>
+            </article>
+            <article class="service-slide">
+              <img src="https://images.unsplash.com/photo-1593702288056-f9f1b2d8c235?auto=format&fit=crop&w=900&q=85" alt="Ambiente premium de barbearia para experiencia reservada" />
+              <div>
+                <span>06</span>
+                <h3>Dia do noivo</h3>
+                <p>Experiencia reservada para chegar impecavel no grande dia.</p>
+                <a class="btn btn-small btn-gold" href="servico.html?tipo=noivo">Ver mais</a>
+              </div>
+            </article>
           </div>
           <div class="card-grid services-grid">
             <article class="service-card reveal">
@@ -289,10 +351,10 @@
         <div class="container booking-grid">
           <div class="section-copy reveal">
             <p class="eyebrow">Agendamento online</p>
-            <h2>Escolha seu servico, profissional e melhor horario.</h2>
+            <h2>Agende em poucos cliques. Chegue no horario. Saia pronto.</h2>
             <p>
-              O agendamento acontece dentro do proprio site, com uma experiencia simples e objetiva.
-              Depois de enviar a solicitacao, a recepcao confirma a disponibilidade pelo contato informado.
+              Escolha o servico, profissional, unidade e forma de pagamento. Se preferir pagar online,
+              a confirmacao acontece automaticamente apos a aprovacao.
             </p>
             <div class="booking-highlights" aria-label="Beneficios do agendamento">
               <div>
@@ -305,7 +367,7 @@
               </div>
               <div>
                 <strong>03</strong>
-                <span>Confirmacao rapida pela recepcao da barbearia</span>
+                <span>Confirmacao no site e acompanhamento pela area do cliente</span>
               </div>
             </div>
           </div>
@@ -403,9 +465,9 @@
       <section class="final-cta section-dark">
         <div class="container final-cta-inner reveal">
           <p class="eyebrow">Agenda aberta</p>
-          <h2>Pronto para elevar seu estilo?</h2>
-          <p>Escolha seu horario e viva uma experiencia de cuidado masculino com padrao premium.</p>
-          <a class="btn btn-gold" href="#agendamento">Agendar pelo site</a>
+          <h2>Seu proximo corte pode ser o melhor cartao de visita.</h2>
+          <p>Reserve agora e experimente um atendimento feito para homens que nao deixam a imagem ao acaso.</p>
+          <a class="btn btn-gold" href="#agendamento">Agendar horario</a>
         </div>
       </section>
     </main>
@@ -443,7 +505,7 @@
         <div>
           <h3>Links rapidos</h3>
           <a href="#servicos">Servicos</a>
-          <a href="#planos">Planos</a>
+          <a href="#experiencia">Experiencia</a>
           <a href="#galeria">Galeria</a>
           <a href="#contato">Contato</a>
           <a href="cliente.html">Meus agendamentos</a>
@@ -455,6 +517,12 @@
         <span>Site institucional premium para apresentacao.</span>
       </div>
     </footer>
+
+    <a class="whatsapp-float" href="#" data-whatsapp-link aria-label="Falar com a barbearia pelo WhatsApp">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M16.04 4.8A11.1 11.1 0 0 0 6.5 21.6L5.2 27l5.54-1.45A11.08 11.08 0 1 0 16.04 4.8Zm0 20.35a9.07 9.07 0 0 1-4.62-1.27l-.33-.2-3.28.86.88-3.2-.22-.34a9.08 9.08 0 1 1 7.57 4.15Zm5-6.78c-.27-.14-1.62-.8-1.87-.89-.25-.09-.43-.14-.61.14-.18.27-.7.89-.86 1.07-.16.18-.32.2-.59.07-.27-.14-1.15-.42-2.19-1.34-.81-.72-1.35-1.61-1.51-1.88-.16-.27-.02-.42.12-.56.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.95.93-.95 2.27s.98 2.63 1.11 2.81c.14.18 1.93 2.94 4.68 4.12.65.28 1.16.45 1.56.58.66.21 1.25.18 1.72.11.52-.08 1.62-.66 1.85-1.3.23-.64.23-1.18.16-1.3-.07-.11-.25-.18-.52-.32Z" />
+      </svg>
+    </a>
 
     <script type="module" src="script.js"></script>
   </body>

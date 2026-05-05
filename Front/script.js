@@ -40,6 +40,9 @@ const bookingError = document.querySelector("[data-booking-error]");
 const dateInput = document.querySelector("[data-date-input]");
 const timeSelect = document.querySelector("[data-time-select]");
 const serviceSelect = document.querySelector("[data-service-select]");
+const serviceCarousel = document.querySelector("[data-service-carousel]");
+const servicePrev = document.querySelector("[data-service-prev]");
+const serviceNext = document.querySelector("[data-service-next]");
 const planLinks = document.querySelectorAll("[data-plan]");
 const dashboardLink = document.querySelector("[data-dashboard-link]");
 const accountToggle = document.querySelector("[data-account-toggle]");
@@ -110,6 +113,21 @@ function initRevealAnimation() {
   );
 
   elements.forEach((element) => observer.observe(element));
+}
+
+function initServiceCarousel() {
+  if (!serviceCarousel) {
+    return;
+  }
+
+  const scrollByCard = (direction) => {
+    const firstCard = serviceCarousel.querySelector(".service-slide");
+    const distance = firstCard ? firstCard.getBoundingClientRect().width + 18 : 360;
+    serviceCarousel.scrollBy({ left: distance * direction, behavior: "smooth" });
+  };
+
+  servicePrev?.addEventListener("click", () => scrollByCard(-1));
+  serviceNext?.addEventListener("click", () => scrollByCard(1));
 }
 
 function initBookingForm() {
@@ -625,6 +643,7 @@ function showBookingMessage(message, type) {
 applyConfig();
 updateHeaderState();
 initRevealAnimation();
+initServiceCarousel();
 initBookingForm();
 initAccountMenu();
 
