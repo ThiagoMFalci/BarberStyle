@@ -1575,8 +1575,26 @@ h3 {
   }
 
   .experience-card {
-    position: static;
-    margin-top: 14px;
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: none;
+    padding: 14px;
+  }
+
+  .experience-card strong {
+    flex: 0 0 auto;
+    font-size: 30px;
+    white-space: nowrap;
+  }
+
+  .experience-card span {
+    margin-top: 0;
+    font-size: 12px;
+    line-height: 1.35;
   }
 
   .gallery-grid {
@@ -1605,6 +1623,15 @@ h3 {
   }
 
   .hero-stats strong {
+    font-size: 26px;
+  }
+
+  .experience-card {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .experience-card strong {
     font-size: 26px;
   }
 
