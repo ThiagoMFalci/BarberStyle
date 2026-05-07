@@ -873,6 +873,23 @@ h3 {
   margin-top: auto;
 }
 
+.plan-card:has([data-plan]) {
+  position: relative;
+}
+
+.plan-card:has([data-plan])::after {
+  display: block;
+  margin-top: 14px;
+  color: var(--muted-dark);
+  content: "Pagamento online pelo Mercado Pago";
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.plan-card.featured::after {
+  color: var(--muted);
+}
+
 .gallery {
   background:
     linear-gradient(180deg, rgba(8, 9, 11, 0.16), rgba(8, 9, 11, 0.92)),

@@ -13,6 +13,7 @@ public static class DatabaseSeeder
         if (db.Database.IsRelational() && db.Database.ProviderName != "Microsoft.EntityFrameworkCore.Sqlite")
         {
             await db.Database.MigrateAsync();
+            await SeedDefaultServicesAsync(db);
             await SeedAdminUserAsync(scope.ServiceProvider, db);
             return;
         }
@@ -28,16 +29,34 @@ public static class DatabaseSeeder
                 new Barber { Name = "Rafael Santos", Specialty = "Barba, navalha e sobrancelha" });
         }
 
-        if (!await db.Services.AnyAsync())
-        {
-            db.Services.AddRange(
-                new BarberService { Name = "Corte", Description = "Corte masculino completo", Price = 45m, DurationMinutes = 45 },
-                new BarberService { Name = "Barba", Description = "Barba com toalha quente e acabamento na navalha", Price = 35m, DurationMinutes = 30 },
-                new BarberService { Name = "Corte + Barba", Description = "Pacote completo de corte e barba", Price = 75m, DurationMinutes = 75 });
-        }
+        await SeedDefaultServicesAsync(db);
 
         await db.SaveChangesAsync();
         await SeedAdminUserAsync(scope.ServiceProvider, db);
+    }
+
+    private static async Task SeedDefaultServicesAsync(BarberShopDbContext db)
+    {
+        var defaultServices = new[]
+        {
+            new BarberService { Name = "Corte", Description = "Corte masculino completo", Price = 45m, DurationMinutes = 45 },
+            new BarberService { Name = "Barba", Description = "Barba com toalha quente e acabamento na navalha", Price = 35m, DurationMinutes = 30 },
+            new BarberService { Name = "Corte + Barba", Description = "Pacote completo de corte e barba", Price = 75m, DurationMinutes = 75 },
+            new BarberService { Name = "Plano Essencial", Description = "Assinatura mensal com 2 cortes e beneficios do clube", Price = 89.90m, DurationMinutes = 45 },
+            new BarberService { Name = "Plano Premium", Description = "Assinatura mensal com cortes e barba do clube premium", Price = 149.90m, DurationMinutes = 75 },
+            new BarberService { Name = "Plano Executivo", Description = "Assinatura mensal VIP com corte, barba e beneficios executivos", Price = 229.90m, DurationMinutes = 90 }
+        };
+
+        foreach (var service in defaultServices)
+        {
+            var exists = await db.Services.AnyAsync(item => item.Name.ToLower() == service.Name.ToLower());
+            if (!exists)
+            {
+                db.Services.Add(service);
+            }
+        }
+
+        await db.SaveChangesAsync();
     }
 
     private static async Task EnsureSqliteAppointmentColumnsAsync(BarberShopDbContext db)

@@ -26,6 +26,7 @@ const defaultServices = [
   { id: "plano-premium", name: "Plano Premium", price: 149.9, duration: 75, active: true },
   { id: "plano-executivo", name: "Plano Executivo", price: 229.9, duration: 90, active: true },
 ];
+const planServices = defaultServices.filter((service) => service.id.startsWith("plano-"));
 const defaultSchedule = siteConfig.defaultSchedule;
 
 const header = document.querySelector("[data-header]");
@@ -148,7 +149,23 @@ function initBookingForm() {
       const plan = link.dataset.plan;
       if (serviceSelect && plan) {
         serviceSelect.value = `Plano ${plan}`;
+        serviceSelect.dispatchEvent(new Event("change", { bubbles: true }));
       }
+
+      const paymentSelect = bookingForm?.elements.paymentMethod;
+      if (paymentSelect) {
+        paymentSelect.value = "Online";
+      }
+
+      const notesField = bookingForm?.elements.notes;
+      if (notesField && plan) {
+        notesField.value = `Quero assinar o Plano ${plan}.`;
+      }
+
+      showBookingMessage(
+        `Plano ${plan} selecionado. Complete data, horario e dados para finalizar a assinatura pelo Mercado Pago.`,
+        "success",
+      );
     });
   });
 
@@ -305,7 +322,7 @@ async function loadApiServices() {
       active: true,
     }));
 
-    localStorage.setItem(servicesStorageKey, JSON.stringify(apiServices));
+    localStorage.setItem(servicesStorageKey, JSON.stringify(mergePlanServices(apiServices)));
     populateServiceOptions();
   } catch {
     // Mantem os servicos locais se a API nao estiver disponivel.
@@ -543,7 +560,19 @@ function populateTimeOptions() {
 }
 
 function getServices() {
-  return JSON.parse(localStorage.getItem(servicesStorageKey) || JSON.stringify(defaultServices));
+  return mergePlanServices(JSON.parse(localStorage.getItem(servicesStorageKey) || JSON.stringify(defaultServices)));
+}
+
+function mergePlanServices(services) {
+  const servicesByName = new Map(services.map((service) => [service.name.toLowerCase(), service]));
+
+  planServices.forEach((plan) => {
+    if (!servicesByName.has(plan.name.toLowerCase())) {
+      services.push(plan);
+    }
+  });
+
+  return services;
 }
 
 function getSchedule() {
